@@ -91,6 +91,7 @@ typedef struct cmd_s
 	complete_t comp_t;
 	int argc;
 	int pri; // completion priority
+	int code; // to allow proper tab completion
 } cmd_t;
 
 typedef struct macro_s
@@ -126,22 +127,22 @@ msn_contact_t *next_contact ();
 static cmd_t commands[MAX_CMDS+1] =
 // {command #, command name, args, description, func, complete type, argc, pri }
 {
-	LOGIN, "login","", "Initiates the MSN Login process.",do_login,NONE,0,1,
-	CHSTATUS, "status","<status>", "Changes the visible user state.",do_chstatus,STATUS,1,2,
-	ADDCNT, "add","<handle>","Adds a new contact to your contact list.", do_addcnt,NONE,1,1,
-	REMCNT,"rem","<handle>","Removes a contact from your list.",do_remcnt,CONTACTS,1,1,
-	SNDMSG,"message","[<handle>]","Sends a message to currently selected contact.",do_sndmsg,CONTACTS,1,2,
-	HELP,"help","[<command>]","Displays help associated with a command.",do_help,CMDS,1,1,
-	AUTH,"auth","","Authorise last user who requested it.",cMSN_Authorize,NONE,0,1,
-	SET,"set","<cvar> <value>","Set cvar value.",do_cvar_set,CVARS,2,1,
-	CHAT,"chat","[<handle>]","Enter chat with user.",do_chat,CONTACTS,1,1,
-	MACRO,"macro","[<macro name>] [<command string>]","Create a user defined macro.",do_macro,MACROS,2,1,
-	ALIAS,"rename","<user/alias> <new alias>","Set friendly name for user.",do_set_alias,CONTACTS,2,2,
-	SHOW_CONNS,"connections","","Display current connections and users associated with them.",do_show_conns,NONE,0,1,
-	SETUP,"initial_setup","","Rerun initial setup.",do_setup,NONE,0,1,
-	ABOUT,"about","","Display information about program.",do_about,NONE,0,2,
-	QUIT,"quit","","Exits the program.",do_quit,NONE,0,1,
-	MAX_CMDS,0,0,0,0,0,0
+	LOGIN, "login","", "Initiates the MSN Login process.",do_login,NONE,0,1,0x0001,
+	CHSTATUS, "status","<status>", "Changes the visible user state.",do_chstatus,STATUS,1,2,0x0002,
+	ADDCNT, "add","<handle>","Adds a new contact to your contact list.", do_addcnt,NONE,1,1,0x0004,
+	REMCNT,"rem","<handle>","Removes a contact from your list.",do_remcnt,CONTACTS,1,1,0x0008,
+	SNDMSG,"msg","[<handle>]","Sends a message to currently selected contact.",do_sndmsg,CONTACTS,1,2,0x0010,
+	HELP,"help","[<command>]","Displays help associated with a command.",do_help,CMDS,1,1,0x0020,
+	AUTH,"auth","","Authorise last user who requested it.",cMSN_Authorize,NONE,0,1,0x0040,
+	SET,"set","<cvar> <value>","Set cvar value.",do_cvar_set,CVARS,2,1,0x0080,
+	CHAT,"chat","[<handle>]","Enter chat with user.",do_chat,CONTACTS,1,1,0x0100,
+	MACRO,"macro","[<macro name>] [<command string>]","Create a user defined macro.",do_macro,MACROS,2,1,0x0200,
+	ALIAS,"ren","<user/alias> <new alias>","Set friendly name for user.",do_set_alias,CONTACTS,2,2,0x0400,
+	SHOW_CONNS,"listconns","","Display current connections and users associated with them.",do_show_conns,NONE,0,1,0x0800,
+	SETUP,"init","","Rerun initial setup.",do_setup,NONE,0,1,0x1000,
+	ABOUT,"about","","Display information about program.",do_about,NONE,0,2,0x2000,
+	QUIT,"quit","","Exits the program.",do_quit,NONE,0,1,0x4000,
+	MAX_CMDS,0,0,0,0,0,0,0x0
 };
 
 static char history[CMD_HISTORY][MAX_INPUT];
@@ -165,7 +166,7 @@ void end_chat();
 void process_username();
 void process_password();
 int get_cmd_by_string( char *string);
-char *complete_word ( char *line, complete_t type, char *);
+char *complete_word ( char *line, complete_t type, char *, int *);
 int get_status_by_string (char *string);
 void select_contact_by_alias ( char *string);
 int string_to_args ( char *string, char **arg, int args );

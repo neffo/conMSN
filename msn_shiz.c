@@ -291,6 +291,8 @@ void m_input_add (int fd, MSN_CALLBACK func, MSN_Conn *conn )
 
 	sconn->fd = fd;
 	sconn->conn = conn;
+	sconn->in = 0;
+	sconn->out = 0;
 
 	err_printf("m_input_add: fd=%d cnx = %x sconn = %x conn = %x\n",fd,MSNshiz.conn.cnx,sconn,sconn->conn);
 

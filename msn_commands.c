@@ -1280,7 +1280,7 @@ static int MSN_Read(int fd, char *buffer, int nItems, int *count)
         else if (c == '\n') {
             buffer[bcount] = '\0';
             *count += 1;
-	    err_printf("MSN_Read: BUFFER=\"%s\" COUNT=%d FD=%d ITEMS=%d\n",buffer,count,fd,nItems);
+	    //err_printf("MSN_Read: BUFFER=\"%s\" COUNT=%d FD=%d ITEMS=%d\n",buffer,count,fd,nItems);
             return 0;
         }
         else {

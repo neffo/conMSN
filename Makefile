@@ -28,7 +28,9 @@ OBJS=	main.o \
 HFILES=display.h input.h
 
 
-all: $(OBJS) 
+all: console
+
+console: $(OBJS) Makefile
 	$(CC) $(CCOPTS) $(OBJS) $(LIBS) -o console
 
 depend:

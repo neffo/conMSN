@@ -31,6 +31,8 @@ X initial run setup (set username and password, create directory and so forth)
 	we aren't getting online/away status updates anymore, we don't seem to
 	be getting the signal from the server anyway, perhaps a SYN message or
 	something needs to be sent
+	UPDATE: an easy fix would be to grab the status from the ChatLists when
+	displaying the contact list, will look into it
 + fix user tab completion so that it completes aliases (plus add conversion for 
 	other functions)
 X fix contact list corruption when scrolling main window (DONE - see 
@@ -40,10 +42,10 @@ X fix contact list corruption when scrolling main window (DONE - see
 + do bash style tab completion (show possible completions)
 X write macros to file on exit and read in on startup (DONE)
 - mouse support :)
-+ find all mistaken uses of MSN_Conn when it should be msn_sess_conn_t (ie when
+X find all mistaken uses of MSN_Conn when it should be msn_sess_conn_t (ie when
 	handling MSNshiz.conn.cnx). in order to get MSN_Conn pointer you need to
 	use the conn part of the msn_conn_sess_t type. (DONE-ish)
 - rework the handling of connections, because MSN multiuser chats are apprently indistinguishable from single user chats
-- fix when running conMSN at >80 widths, >24 heights don't break anything yet
-	>80 (not sure exact value) breaks initial scrolling stuff. essentially
+- fix when running conMSN at >80 widths, >24 heights don't break anything yet	>80 width (not sure exact value) breaks initial scrolling stuff. essentially
 	logpos is set to 0, for no good reason, and appears to be accidental
+X fix problem with process_cmd() (probably), that causes conMSN to ignore commands unless the line contains a space. eg. "quit" is ignored, "quit " is accepted. (DONE)

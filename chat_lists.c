@@ -24,7 +24,8 @@
 #include <string.h>
 #include <strings.h>
 #include "chat_lists.h"
-#include "libmsn.h"
+#include "msn_shiz.h"
+//#include "libmsn.h"
 
 /*
 ** Name:    AddUserToChatList
@@ -62,7 +63,7 @@ int AddUserToChatList(ChatSession *chatSession, char *userHandle,
  
     chatSession->users = m_list_append(chatSession->users, newUser); 
     chatSession->numOfUsers += 1;
-    err_printf("AddUserToChatList: %s STATUS: %d\n",userHandle,userState);
+    err_printf("AddUserToChatList: %s STATUS: %s\n",userHandle,msn_status_strings[userState-1]);
 
     sc = (MSN_StatusChange*)malloc(sizeof(MSN_StatusChange));
 
@@ -70,7 +71,7 @@ int AddUserToChatList(ChatSession *chatSession, char *userHandle,
 	    return -1;
 
     sc->handle = userHandle;
-    sc->newStatus = userState; 
+    sc->newStatus = userState-1; 
 
     MSNStatusChange(sc);
 
@@ -139,6 +140,7 @@ int ChangeUserState(ChatSession *chatSession, char *userHandle,
 {
     mlist node;
     ChatUser  *cu;
+    MSN_StatusChange *sc;
 
     if (chatSession->users == NULL)
         return -1;
@@ -152,6 +154,17 @@ int ChangeUserState(ChatSession *chatSession, char *userHandle,
     cu = node->data;
     cu->state = userState;
     err_printf("ChangeUserState: %s success.\n",userHandle);
+
+    if ( sc == NULL)
+	    return -1;
+
+    sc->handle = userHandle;
+    sc->newStatus = userState;
+
+    MSNStatusChange(sc);
+
+    free(sc);
+    
     return 0;
 }
 

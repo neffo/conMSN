@@ -43,6 +43,8 @@ static char msn_port[10] = "1863";
 typedef struct msn_sess_s
 {
 	int fd;
+	int in; // bytes in
+	int out; // bytes out
 	MSN_Conn *conn;
 	MSN_CALLBACK cb;
 } msn_sess_conn_t;

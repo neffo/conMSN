@@ -57,6 +57,7 @@ void cmd_complete()
 	char *space;
 	char *cmp;
 	char matches[1024];
+	int matchedcmds;
 
 	char *str;
 	
@@ -86,7 +87,7 @@ void cmd_complete()
 
 		match = 0;
 		
-		match = get_cmd_by_string ( complete_word( input.cmd, CMDS, matches) );
+		match = get_cmd_by_string ( complete_word( input.cmd, CMDS, matches, &matchedcmds) );
 
 		if ( match > -1 )
 		{	
@@ -113,7 +114,7 @@ void cmd_complete()
 		
 		cmp = 0;
 
-		cmp = complete_word(space+1,commands[match].comp_t, matches);
+		cmp = complete_word(space+1,commands[match].comp_t, matches, &matchedcmds);
 
 		if (cmp)
 		{
@@ -140,7 +141,7 @@ void cmd_complete()
 
 }
 
-char *complete_word ( char *word, complete_t type, char *matches)
+char *complete_word ( char *word, complete_t type, char *matches, int *matchedcmds)
 {
 	// FIXME: use new method so as to allow completion of 2 or more
 	// different types (ie use "if (type & CMDS)" )
@@ -589,7 +590,7 @@ void process_cmd()
 	if (!eq)
 	{
 		//err_printf("before: %s",input.cmd);
-		if (string_to_args(input.cmd,args,2) != 2 )
+		if (string_to_args(input.cmd,args,2) < 1 )
 			goto endbit;
 		//err_printf("after: %s",args[1]);
 
@@ -762,7 +763,7 @@ void do_help(char *command)
 
 	if (match == -1 )
 	{
-		log_println("--[HELP]");
+		log_println("--[Help]");
 
 		log_println("aKeys :");
 		log_println("  [ & ] : select previous/next contact.");
@@ -822,7 +823,7 @@ void do_about (char *data)
 
 	getfut(fut,&tv,&MSNshiz.startup);
 	
-	log_printf("--[ABOUT]");
+	log_printf("--[About]");
 	log_printf("a%s",PROG_NAME);
 	log_printf("a%s",PROG_VERSION);
 	log_printf("Type \"help\" for a list of commands.");
@@ -964,7 +965,7 @@ void cvar_list ( char *string)
 	mlist cur;
 	msn_cvar_t *cvar;
 	
-	log_println("--[CVARS]");
+	log_println("--[Cvars]");
 	for(cur=MSNshiz.cvars;cur;cur=cur->next)
 	{
 		cvar = (msn_cvar_t *) cur->data;
@@ -1199,6 +1200,8 @@ void do_show_conns ( char *string)
 	int i,j;
 
 	i=0;
+
+	log_printf("--[Connections]");
 	for (curc = MSNshiz.conn.cnx; curc; curc=curc->next)
 	{
 		sconn = curc->data;

@@ -1,3 +1,8 @@
+July 30, 2002:
+* fixed issue with process_cmd(), basically any single word cmd was ignored 
+unless it was followed with a space (it was stupidly expecting 
+string_to_args() to return 2 args)
+
 July 18, 2002:
 * updated AddUserToChatList() so as to set the state of the user to online.
 there is still the issue with changing user states however, for instance,
@@ -7,4 +12,4 @@ is to use ChatLists instead of our own storage methods for user states.
 * added msn_show_typing cvar
 
 July 16, 2002:
-actually works, ie send and recieve messages
+* actually works, ie send and recieve messages
