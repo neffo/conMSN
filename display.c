@@ -82,6 +82,10 @@ void screen_setup ( /*cdisplay_t *display*/ )
 
 	display.ready = 1;
 
+	err_printf("screen_setup()\n");
+	err_printf("display h: %d w: %d\nmain h: %d w: %d\ncont h:%d w:%d\ncmd h:%d w:%d\n",display.scrh,display.scrw,display.wmain.winh,display.wmain.winw,display.wcontacts.winh,display.wcontacts.winw,display.wcmd.winh,display.wcmd.winw);
+	err_printf("logpos: %d loglines: %d\n",display.logpos,display.loglines);
+
 }
 
 void screen_end (/* cdisplay_t *display*/ )
@@ -319,7 +323,7 @@ void redraw_main()
 	// hack to get scroll bar to hit the top
 	if (display.logpos == (SCROLLBACK - (display.loglines - display.wmain.winh) + 1))
 		offset = h-size;
-	
+
 //	err_printf("offset = %6.3f size = %6.3f (%6.3f)\nlines = %d height = %d logpos = %d\n",offset,size,size,display.loglines,display.wmain.winh,display.logpos);
 
 	//size +=1;
@@ -686,18 +690,20 @@ void log_printf(char *format, ...)
 void log_scroll_up()
 {
 	int maxlogpos;
+
+	// comments refer to conmsn MAXIMISED
 	
-	display.logpos-=5;
+	display.logpos-=5; // 400 - 5 = 395
 	if (display.logpos < display.wmain.winh)
-		display.logpos = display.wmain.winh;
+		display.logpos = display.wmain.winh; // no
 
-	maxlogpos = SCROLLBACK - (display.loglines - display.wmain.winh) + 1;
+	maxlogpos = SCROLLBACK - (display.loglines - display.wmain.winh) + 1; // 400 - ( 0 - 46) = 446
 
-	if (maxlogpos > SCROLLBACK)
-		maxlogpos = SCROLLBACK;
+	if (maxlogpos > SCROLLBACK) // yes
+		maxlogpos = SCROLLBACK; // 400
 	
-	if ( display.logpos < maxlogpos )
-		display.logpos = maxlogpos;
+	if ( display.logpos < maxlogpos ) // yes
+		display.logpos = maxlogpos; // 400
 
 //	log_printf("maxlogpos = %d\n",maxlogpos);
 	

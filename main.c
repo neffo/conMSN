@@ -21,7 +21,7 @@ extern int errno;
 
 //#define TEST 
 //
-//#undef USE_ERR_LOG
+#undef USE_ERR_LOG
 
 int main( void )
 {
