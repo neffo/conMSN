@@ -488,12 +488,12 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
     length = atoi(args[3]);
     message = (char *)malloc(sizeof(char) * (length + 1));
 
-    log_printf("HandleMessage ( From : %s (%s) -> %d bytes )\n",args[1],args[2],args[3]);
+    err_printf("HandleMessage ( From : %s (%s) -> %d bytes )\n",args[1],args[2],args[3]);
     
     nread = read(conn->fd, message, length);
     message[nread] = '\0';
 
-    log_printf("DATA: ***\"%s\"***\n",message);
+    err_printf("DATA: ***\"%s\"***\n",message);
 
     if (ParseMimeHeaders(message, &mimeInfo, &im) != 0) {
         return -1;

@@ -34,6 +34,13 @@ void MSNInstantMessage(void *data)
 	// FIXME: add event to eventlist instead of just outputting it
 	// although this might actually be a better (well less annoying) way
 	// (i'm sticking with this method for now)
+	//
+	if (contact == NULL)
+	{
+		err_printf("contact == NULL\n");
+		contact = new_contact(im->sender,im->sender);
+	}
+		
 
 	// FIXME: add event to log files (DONE)
 	if (cvar_true("msn_log"))
@@ -252,14 +259,24 @@ msn_contact_t *GetContactByHandle( char *handle)
 	msn_contact_t *contact;
 	msn_contact_t *temp;
 	mlist cur;
+	int len;
 
 	contact = 0;
+
+	len = 0;
+
+	err_printf("GetContactByHandle(%s)\n",handle);
+
+	if (strchr(handle,'@'))
+	{
+		len = (int)(strchr(handle,'@') - strlen(handle));
+	}
 
 	for(cur = MSNshiz.contacts;cur;cur=cur->next)
 	{
 		temp = (msn_contact_t *) cur->data;
 
-		if (strcasecmp(temp->handle, handle) == 0)
+		if (strncasecmp(temp->handle, handle,len) == 0)
 			contact = temp;
 	}
 	
