@@ -1,6 +1,7 @@
 CC=cc 
 CCOPTS= -DHAVE_STRTOK_R -fpedantic -g -DDEBUG -DUSE_ERR_LOG
 LIBS=-lncurses 
+VERSION=`cat VERSION`
 
 OBJS=	main.o \
 	display.o \
@@ -62,4 +63,4 @@ clean:
 	rm -f *.o *~ console
 
 targz: clean
-	bash -c "cd ..;tar zcvf nefmsn_`cat nefmsn-latest/VERSION`_`date +%Y_%m_%d`.tar.gz nefmsn-latest/"
+	bash -c "cd ..;tar zcvf nefmsn_$(VERSION)_`date +%Y_%m_%d`.tar.gz nefmsn-latest/"

@@ -42,13 +42,15 @@ int main( void )
 	MSNshiz.errfile = stderr;
 #endif	
 
+	init_cvars();
+	file_init();
 	screen_setup();
 	draw_windows();
 	input_init();
 
 	MSNInitShiz();
 	redraw_cmd_line();
-	init_cvars();
+	//init_cvars();
 
 	quit = 0;
 
@@ -60,7 +62,7 @@ int main( void )
 		redraw_cmd_line();
 	}
 
-	file_init();
+	//file_init();
 	
 	redraw_status();
 	update_windows();

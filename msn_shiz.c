@@ -351,7 +351,7 @@ void init_cvars ()
 	set_cvar("msn_log","y","Log instant messages to a file.");
 	set_cvar("msn_debug","n","Prints various debugging data to the screen.");
 	set_cvar("msn_call_ext","y","Call external programs on events.");
-	set_cvar("msn_correct_graphics","y","Force rewritting to prevent graphical errors. (Needed by gnome-terminal.)");
+	set_cvar("msn_correct_graphics","n","Force rewritting to prevent graphical errors. (Needed by gnome-terminal.)");
 	set_cvar("msn_auto_login","n","Automatically logon when program starts.");
 	set_cvar("msn_scrollback","200","Number of lines in scrollback buffer. (IGNORED)");
 }

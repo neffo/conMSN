@@ -1,5 +1,6 @@
 ( + really important    - fairly important    X - done)
 
++ CLEAN UP CODE (remove redundancy, etc)
 + Test the bloody thing (especially the setup_fds() function and those 
 	related to it) (kinda DONE: setup_fds() appears to work as it should)
 + add debug output for all functions to properly test what the hell is going on
@@ -18,7 +19,7 @@ X fix cvar code (use mlists?) (DONE)
 	resize
 - do proper clean up on exit (is this actually necessary?)
 - use mlists for commands as well ? (kinda goes with macros - below)
-- user defined macros
+X user defined macros (DONE)
 X initial run setup (set username and password, create directory and so forth) 
 	(DONE)
 + ability to set aliases for users and work out how to get user specified 
@@ -30,5 +31,5 @@ X fix contact list corruption when scrolling main window (DONE - see
 - allow user to use commands even when in a chat ( by adding a "/" in front of 
 	the command)
 + do bash style tab completion (show possible completions)
-- write macros to file on exit and read in on startup
+X write macros to file on exit and read in on startup (DONE)
 - mouse support :)

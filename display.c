@@ -11,7 +11,15 @@ extern msn_shiz_t MSNshiz;
 
 void screen_setup ( /*cdisplay_t *display*/ )
 {
-	//display.log = (char*)malloc(SCROLLBACK * MAX_LOG_WIDTH);
+	int i;
+
+	display.log = malloc(SCROLLBACK * sizeof(char **));
+
+	for (i=0;i<SCROLLBACK;i++)
+	{
+		display.log[i] = malloc( sizeof ( char *) * MAX_LOG_WIDTH );
+	}
+
 	initscr();
 	cbreak();
 	noecho();

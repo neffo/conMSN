@@ -64,7 +64,7 @@ void write_contacts_file()
 
 	if ( cfile == NULL)
 	{
-		log_printf("eERROR: unable to write contacts file.");
+	//	log_printf("eERROR: unable to write contacts file.");
 		return;
 	}
 
@@ -103,7 +103,7 @@ void read_contacts_file()
 
 	if (cfile == NULL)
 	{
-		log_println("eERROR: unable to open contacts file");
+//		log_println("eERROR: unable to open contacts file");
 		return;
 	}
 
@@ -151,7 +151,7 @@ void write_config()
 
 	if (cfile == NULL)
 	{
-		log_printf("eERROR: unable to write config file.");
+		//log_printf("eERROR: unable to write config file.");
 		return;
 	}
 
@@ -186,7 +186,7 @@ void read_config()
 
 	if (cfile == NULL)
 	{
-		log_printf("eERROR: unable to read config file");
+		//log_printf("eERROR: unable to read config file");
 		return;
 	}
 
@@ -260,7 +260,7 @@ void read_macros()
 
 	if (cfile == NULL)
 	{
-		log_printf("eERROR: unable to read macro file.");
+	//	log_printf("eERROR: unable to read macro file.");
 		return;
 	}
 	c = 0;
@@ -270,10 +270,10 @@ void read_macros()
 		//  ^file ^space  ^space2
 		//       0       0  0
 		line[strlen(line)-1] = 0;
-		space = strchr(line,' ');
+		space = (char *) strchr(line,' ');
 		*space = 0;
 		space++;
-		space2 = strchr(space,' ');
+		space2 = (char *) strchr(space,' ');
 		*space2 = 0;
 		space2++;
 		cmd = get_cmd_by_string( space );

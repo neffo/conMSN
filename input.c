@@ -132,12 +132,15 @@ void cmd_complete()
 
 char *complete_word ( char *word, complete_t type)
 {
+	// FIXME: use new method so as to allow completion of 2 or more
+	// different types (ie use "if (type & CMDS)" )
 	char *ret;
 	mlist cur;
 	int i;
 
 	msn_contact_t *cont;
 	msn_cvar_t *cvar;
+	macro_t *macro;
 
 	ret = 0;
 	cont = 0;
@@ -165,7 +168,9 @@ char *complete_word ( char *word, complete_t type)
 		for(;cur;cur=cur->next)
 		{
 			cont = (msn_contact_t *)cur->data;
-			if (strncasecmp(word,cont->handle,strlen(word))== 0)
+			if (strncasecmp(word,cont->alias,strlen(word))== 0)
+				ret = cont->alias;
+			else if (strncasecmp(word,cont->handle,strlen(word))== 0)
 				ret = cont->handle;
 		}
 		break;
@@ -184,6 +189,16 @@ char *complete_word ( char *word, complete_t type)
 			cvar = (msn_cvar_t *)cur->data;
 			if (strncasecmp(word,cvar->name,strlen(word))==0)
 				ret = cvar->name;
+		}
+		break;
+	case MACROS:
+
+		for (cur = input.macros; cur; cur=cur->next)
+		{
+			macro = cur->data;
+			if (strncasecmp(word, macro->cmd, strlen(word))==0)
+				ret = macro->cmd;
+
 		}
 		break;
 	}
@@ -207,9 +222,19 @@ void input_parse(int ch)
 				}
 				break;
 			case KEY_UP:
+				if (input.history_pos == 0)
+				{
+					add_to_history(input.cmd);
+					history_up();
+				}
 				history_up();
 				break;
 			case KEY_DOWN:
+				if (input.history_pos == 0)
+				{
+					add_to_history(input.cmd);
+					//history_up();
+				}
 				history_down();
 				break;
 			case KEY_PPAGE:
@@ -306,7 +331,7 @@ void input_parse(int ch)
 
 		case KEY_BACKSPACE:
 		case 127:
-			line_remchar(); // FIXME: use line_remchar() ?
+			line_remchar(); 
 			break;
 		case '\n':
 			if ( input.input_size > 0 )
@@ -315,7 +340,7 @@ void input_parse(int ch)
 				end_chat();
 			break;
 		default:
-			line_addchar(ch); // FIXME: use line_addchar() ?
+			line_addchar(ch);
 		}
 	}
 }
@@ -479,15 +504,18 @@ void add_to_history(char *command)
 
 void process_cmd()
 {
+	// FIXME: use string_to_args() function instead
 	char cmd[1024];
 	int i;
 	cmd_t *command;
 	mlist cur;
 	msn_cvar_t *cvar;
 	char *arg;
+	char *args[2];
 	char *eq;
 	int match;
 	macro_t *macro;
+	msn_contact_t *cont;
 	
 	i=0;
 	command=0;
@@ -501,32 +529,23 @@ void process_cmd()
 
 	if (!eq)
 	{
-		while (i<input.len && input.cmd[i] != ' ')
-		{
-			cmd[i]=input.cmd[i];
-			i++;
-		}
-		cmd[i]=0;
-
-		i=0;
-		while ( commands[i].cmdn != BADCMD )
-		{
-			if (strncasecmp(commands[i].cmd,cmd,4)==0)
-				command = &commands[i];
-			i++;
-		}
+		err_printf("before: %s",input.cmd);
+		if (string_to_args(input.cmd,args,2) != 2 )
+			goto endbit;
+		err_printf("after: %s",args[1]);
+		
+		command = &commands[get_cmd_by_string( args[0] )];
 
 		if (command == 0)
 			goto endbit;
+
+		if ( (command->comp_t & CONTACTS ) && command->argc == 1 )
+		{
+			cont = get_contact_by_string (args[1]);
+	//		args[1] = cont->handle;
+		}
 		
-		arg=input.cmd + strlen(cmd);
-
-		arg++;
-
-		if (input.len <= strlen(cmd)+1)
-			arg[0]=0;
-	
-		command->do_it(arg);
+		command->do_it(args[1]);
 	
 		endbit:
 		if (!command)
@@ -549,7 +568,8 @@ void process_cmd()
 	}
 	else
 	{
-		
+	/*	this should never be called anyway
+	
 		arg = eq + 1;
 		strncpy(cmd,input.cmd,eq-input.cmd);
 
@@ -571,7 +591,7 @@ void process_cmd()
 			log_printf("eERROR: unknown cvar (%s)",cmd);
 
 nodata:
-
+*/
 	}
 	input.len=0;
 	input.cmd[0]=0;
@@ -606,7 +626,7 @@ void do_chstatus(char *mode)
 void do_sndmsg(char *user)
 {
 	if (MSNshiz.conn.status == MSN_OFFLINE)
-		log_printf("eERROR: currently offline, log on first");
+		log_printf("eNot connected.");
 	else
 	{
 
@@ -615,7 +635,7 @@ void do_sndmsg(char *user)
 		
 		if (!input.contact)
 		{
-			log_printf("eERROR: no contact selected.");
+			log_printf("eNo contact selected.");
 			return;
 		}
 	
@@ -687,11 +707,11 @@ void do_chat (char *handle)
 
 	if (!input.contact)
 	{
-		log_printf("eERROR: no contact selected.");
+		log_printf("eNo contact selected.");
 		return;
 	}
 	
-	log_printf("aChatting to %s:",input.contact->handle);
+	log_printf("aChatting to %s (%s):",input.contact->alias,input.contact->handle);
 	log_println("a<ENTER> to send, empty line to end chat");
 	snprintf(input.prompt,29,"%s>",input.contact->alias);
 	input.in_mode = IN_CHAT;
@@ -865,20 +885,14 @@ int get_status_by_string (char *string)
 
 void select_contact_by_alias ( char *string)
 {
-	mlist cur;
+	// FIXME: use find_contact_by_alias() function or similar
+//	mlist cur;
 	msn_contact_t *cont;
 
-	cur = MSNshiz.contacts;
+	cont = get_contact_by_string ( string );
 
-	for (;cur;cur=cur->next)
-	{
-		cont = (msn_contact_t *) cur->data;
-		
-		if ( cont && ( strncasecmp(cont->alias,string,strlen(string))== 0 || strncasecmp(cont->handle,string,strlen(string))==0 ))
-		{
-			input.contact = cont;
-		}
-	}
+	if (cont)
+		input.contact=cont;
 }
 
 void do_cvar_set ( char *string )
@@ -1020,6 +1034,99 @@ void do_setup ( char *string )
 	input.inputbuf = input.cmd;
 	input.input_size = 0;
 	strcpy(input.prompt,"Username>");
+}
+
+
+// if user = '-' then user = currently selected user
+// that way you can rename someone if they have a dodgy alias (with spaces or
+// something)
+void do_set_alias ( char *string)
+{
+	msn_contact_t *cont;
+	char *args[2]; // 0 = user 1 = new alias
+
+	cont = 0;
+	
+	err_printf("do_set_alias %s\n",string);
+	
+	if ( string_to_args(string, args, 2) == 2)
+	{
+		if ( strcmp(args[0],"-")== 0 )
+		{
+			cont = input.contact;
+		}
+		else
+		{
+			cont = get_contact_by_string ( args[0] );
+		}
+
+		if (cont)
+		{
+			strcpy(cont->alias,args[1]);
+
+			redraw_status();
+		}
+		else
+		{
+			log_printf("eUnknown contact.");
+		}
+	}
+	else
+	{
+		log_printf("eInvalid number of args.");
+	}
+	
+}
+
+
+// alters string (adds \0)
+// if important strdup() it before hand
+int string_to_args ( char *string, char **arg, int args )
+{
+	char *space;
+	int i;
+
+	i=0;
+	
+	for (space = string; i < args && space; i++)
+	{
+		if (space && i)
+		{
+			*space = 0;
+			space++;
+		}
+		
+		arg[i] = space;
+
+		space = strchr(space,' ');
+
+		/*if (space && i)
+		{
+			*space=0;
+			space++;
+		}*/
+	}
+
+	err_printf("string_to_args() %d -> %d\n",args,i);
+	
+	return i;
+}
+
+msn_contact_t *get_contact_by_string ( char *string)
+{
+	mlist cur;
+	msn_contact_t *cont;
+
+	for (cur=MSNshiz.contacts;cur;cur=cur->next)
+	{
+		cont = cur->data;
+		if (strncasecmp(string,cont->handle,strlen(string))==0)
+			return cont;
+		if (strncasecmp(string,cont->alias,strlen(string))==0)
+			return cont;
+	}
+
+	return 0;
 }
 
 /*mlist find_matches( char *string, char *matching, complete_t cmp_t)
