@@ -42,15 +42,21 @@ int main( void )
 	MSNshiz.errfile = stderr;
 #endif	
 
+
+	// this whole order thing is boinked
+	// half of the functions depend on others to have run first
+	// ie init_cvars() must be after MSNInitShiz()
+	
+	MSNInitShiz();
 	init_cvars();
-	file_init();
+//	file_init();
 	screen_setup();
 	draw_windows();
 	input_init();
 
-	MSNInitShiz();
+//	MSNInitShiz();
 	read_config();
-	read_contacts_file();
+	read_contacts();
 	read_macros();
 	redraw_cmd_line();
 	//init_cvars();
@@ -93,7 +99,7 @@ int main( void )
 		{
 			if (FD_ISSET(0, &MSNshiz.fds))
 				input_process();
-			else
+			//else // we don't want it ignoring other sockets
 			{
 				cur = MSNshiz.conn.cnx;
 

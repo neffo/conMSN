@@ -1,7 +1,14 @@
 CC=cc 
-CCOPTS= -DHAVE_STRTOK_R -fpedantic -g -DDEBUG -DUSE_ERR_LOG
-LIBS=-lncurses 
+
 VERSION=`cat VERSION`
+BUILDDATE=`date +%Y%m%d`
+BUILDTIME=`date +%H%M`
+
+PVER=v$(VERSION)_$(BUILDDATE)_$(BUILDTIME)
+
+CCOPTS= -DHAVE_STRTOK_R -fpedantic -g -DDEBUG -DUSE_ERR_LOG \
+-DPROG_VERSION=\"$(PVER)\"
+LIBS=-lncurses 
 
 OBJS=	main.o \
 	display.o \

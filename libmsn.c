@@ -156,7 +156,7 @@ LOGIN_RETRY:
 
     if (ConnectToServer(mainconn, host, port) != 0) {
 //        MSN_ErrorOut("Couldn't connect to server", "Server Error");
-		err_printf("Unable to connect to server.");
+		err_printf("Unable to connect to server.\n");
         return -1;
     }
     if (SetProtocol(mainconn, DEFAULT_PROTOCOL) != 0) {
@@ -213,6 +213,7 @@ int MSN_SendMessage(char *handle, char *message)
         conn = FindMSNConnectionByHandle(newHandle);
         if (conn == NULL) {
             free(newHandle);
+	    err_printf("MSN_SendMessage: unable to create new connection.\n");
             return -1;
         }
     } 

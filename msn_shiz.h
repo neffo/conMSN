@@ -13,7 +13,7 @@
 #define MAX_EVENTS 30
 
 #define PROG_NAME "conMSN"
-#define PROG_VERSION "Version 0.9"
+//#define PROG_VERSION "v"
 
 static char * msn_status_strings[] =
 {"","OFFLINE","HIDDEN","BUSY","AWAY","BRB","AWAY","PHONE","LUNCH"};
@@ -50,7 +50,7 @@ typedef struct msn_sess_s
 typedef struct msn_conn_s
 {
 	void *mainconn; // storage for MSNConn struct
-	mlist cnx; // list of connections
+	mlist cnx; // list of connections (msn_sess_cont_t types to be precise)
 	char username[256];
 	char password[256];
 	int status; // status of user (ie. me)
@@ -93,6 +93,8 @@ typedef struct msn_shiz_s
 	int first_run;
 	//FILE *errfile;
 	void *errfile;
+	struct timeval startup;
+	int ready;
 } msn_shiz_t;
 
 void MSNInitShiz(void);
@@ -133,6 +135,8 @@ char *cvar_value ( char *cvar );
 msn_cvar_t * find_cvar ( char *cvar );
 
 void err_printf(char *format, ...);
+
+void getfut(char *, struct timeval *, struct timeval *);
 
 
 #endif

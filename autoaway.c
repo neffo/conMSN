@@ -1,3 +1,11 @@
+/*
+ * these functions use the utmp file to check if a user is currently logged in.
+ * they work best if you are logging in remotely, and running this program in
+ * "screen". when you log in your status will switch to online, when you log out
+ * your status will switch to away. it doesn't like local logins (tty or X).
+ *
+ */
+
 #include <utmp.h>
 #include <signal.h>
 #include "msn_shiz.h"
@@ -9,6 +17,8 @@ extern msn_shiz_t MSNshiz;
 
 void CheckLoggedIn(int a1, int a2)
 {
+	// FIXME : check idle time as well, use "busy" mode or something
+
 	int found;
 	char *username;
 	struct utmp *ut;
@@ -20,7 +30,7 @@ void CheckLoggedIn(int a1, int a2)
 	found = 0;
 	
 	while( (ut = getutent()) )
-		if (ut->ut_type == 7) // login?
+		if (ut->ut_type == 7) // login pty? ignore screen, X and locals
 		{
 			if (strncasecmp(username,ut->ut_user,8)==0)
 				found++;

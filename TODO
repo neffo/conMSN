@@ -17,13 +17,16 @@ X add autoaway code (DONE)
 X fix cvar code (use mlists?) (DONE)
 - allow resizing of windows (ie contact list) && automagic resizing on xterm 
 	resize
+- along the same line, have a dynamically resizing command line window, to allow
+	for multiline messages and the like (ie. IN_BLOCK input type)
 - do proper clean up on exit (is this actually necessary?)
 - use mlists for commands as well ? (kinda goes with macros - below)
 X user defined macros (DONE)
 X initial run setup (set username and password, create directory and so forth) 
 	(DONE)
-+ ability to set aliases for users and work out how to get user specified 
-	aliases from the server
++ ability to set aliases for users (DONE) and work out how to get user specified 
+	aliases from the server - probably something to do with an unimplemented
+	MSN command, because we don't get offline users either
 + fix user tab completion so that it completes aliases (plus add conversion for 
 	other functions)
 X fix contact list corruption when scrolling main window (DONE - see 
@@ -33,3 +36,6 @@ X fix contact list corruption when scrolling main window (DONE - see
 + do bash style tab completion (show possible completions)
 X write macros to file on exit and read in on startup (DONE)
 - mouse support :)
++ find all mistaken uses of MSN_Conn when it should be msn_sess_conn_t (ie when
+	handling MSNshiz.conn.cnx). in order to get MSN_Conn pointer you need to
+	use the conn part of the msn_conn_sess_t type. (DONE-ish)

@@ -80,6 +80,8 @@ void screen_setup ( /*cdisplay_t *display*/ )
 	display.logpos=SCROLLBACK; //last line displayed
 	display.loglines=0;
 
+	display.ready = 1;
+
 }
 
 void screen_end (/* cdisplay_t *display*/ )
@@ -162,7 +164,7 @@ void update_windows ()
 		if ( input.in_mode == IN_CMD)
 			move(display.wcmd.sy,display.wcmd.sx+input.curspos+1);
 		else 
-			move(display.wcmd.sy,display.wcmd.sx+strlen(input.prompt)+input.input_size+1);
+			move(display.wcmd.sy,display.wcmd.sx+(int)strlen(input.prompt)+input.input_size+1);
 		refresh();
 	}
 
@@ -224,7 +226,6 @@ void redraw_cmd_line()
 void redraw_main()
 {
 
-	// FIXME: add scroll bar for scrollback history
 	int i=0;
 	int first;
 	int last;
@@ -324,8 +325,8 @@ void redraw_main()
 	//size +=1;
 	by1 = 0;
 	by4 = h;
-	by3 = by4-offset;
-	by2 = by4-size-offset;
+	by3 = by4-(int)offset;
+	by2 = by4-(int)size-(int)offset;
 
 //	if (by2>by1)
 //		by2-=1;
@@ -438,7 +439,7 @@ void redraw_status ()
 
 	i = 0;
 
-	for (cur = MSNshiz.contacts; cur; cur=cur->next)
+	for (cur = MSNshiz.contacts; cur; cur=(mlist)cur->next)
 	{
 		if (cur && input.contact == cur->data)
 		{
@@ -457,7 +458,7 @@ void redraw_status ()
 	
 	i = 0;
 	
-	for (cur = MSNshiz.contacts; cur; cur=cur->next)
+	for (cur = MSNshiz.contacts; cur; cur=(mlist)cur->next)
 	{
 		cont = (msn_contact_t *) cur->data;
 		if (i>skip && y < MAXVISCONTS+1 )
@@ -606,8 +607,11 @@ void append_ln ( char *string )
 	// FIXME: add word wrapping
 	char *line;
 	int diff;
+	int len;
 
 	line = display.log[SCROLLBACK-1];
+
+//brkline:
 
 	strcat(line,string);
 
@@ -713,7 +717,7 @@ int conn_count ()
 	mlist cur;
 	int cc=0;
 
-	for (cur=MSNshiz.conn.cnx;cur;cur=cur->next)
+	for (cur=MSNshiz.conn.cnx;cur;cur=(mlist)cur->next)
 	{
 		cc++;
 	}

@@ -30,19 +30,19 @@ void first_run ()
 
 void file_init()
 {
-	read_contacts_file();
+	read_contacts();
 	read_config();
 	read_macros();
 }
 
 void file_end()
 {
-	write_contacts_file();
+	write_contacts();
 	write_config();
 	write_macros();
 }
 
-void write_contacts_file()
+void write_contacts()
 {
 	FILE *cfile;
 	mlist cur;
@@ -79,7 +79,7 @@ void write_contacts_file()
 
 	fclose(cfile);
 }
-void read_contacts_file()
+void read_contacts()
 {
 	FILE *cfile;
 	mlist cur;

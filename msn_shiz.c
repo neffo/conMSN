@@ -167,13 +167,11 @@ void cMSN_Logout()
 
 	msn_contact_t *contact;
 
-	cur = MSNshiz.contacts;
-
 	MSN_Logout();
 	
 	// FIXME: set all user status to OFFLINE (DONE)
 	
-	for (;cur;cur=cur->next)
+	for (cur = MSNshiz.contacts;cur;cur=(mlist)cur->next)
 	{
 		contact = (msn_contact_t *) cur->data;
 
@@ -217,10 +215,11 @@ void cMSN_AddContact(char *handle)
 	if (MSN_AddContact(handle) == 0)
 		err_printf("cMSN_AddContact: %s -> %s success\n",handle);
 	else
-		err_printf("cMSN_AddContact: %s -> %s success\n",handle);
+		err_printf("cMSN_AddContact: %s -> %s failure\n",handle);
 
 	// FIXME: this should use the new_contact() function
 	
+/*
 	contact = (msn_contact_t *) malloc ( sizeof(msn_contact_t));
 
 	strcpy(contact->handle, handle);
@@ -230,6 +229,8 @@ void cMSN_AddContact(char *handle)
 	contact->status = MSN_OFFLINE;
 
 	MSNshiz.contacts = m_list_append(MSNshiz.contacts, contact);
+*/
+	new_contact(handle,handle);
 
 }
 
@@ -244,8 +245,6 @@ void cMSN_RemContact(char *handle)
 	MSNshiz.contacts = m_list_remove(MSNshiz.contacts,cur);
 
 	free(cur);
-
-	// FIXME: i think we need to free the mlist thing as well
 }
 
 msn_contact_t *GetContactByHandle( char *handle)
@@ -254,11 +253,9 @@ msn_contact_t *GetContactByHandle( char *handle)
 	msn_contact_t *temp;
 	mlist cur;
 
-	cur = MSNshiz.contacts;
-
 	contact = 0;
 
-	for(;cur;cur=cur->next)
+	for(cur = MSNshiz.contacts;cur;cur=cur->next)
 	{
 		temp = (msn_contact_t *) cur->data;
 
@@ -288,9 +285,7 @@ void m_input_remove ( MSN_Conn *conn )
 	mlist cur;
 	msn_sess_conn_t *sconn;
 
-	cur = MSNshiz.conn.cnx;
-
-	for (;cur;cur=cur->next)
+	for (cur = MSNshiz.conn.cnx;cur;cur=cur->next)
 	{
 		sconn = (msn_sess_conn_t *)cur->data;
 
@@ -310,8 +305,7 @@ void m_input_remove ( MSN_Conn *conn )
 void setup_fds()
 {
 	mlist cur;
-	msn_sess_conn_t *conn; // should be MSN_Conn (i think)
-//	MSN_Conn *conn; // nope MSN_Conn is a subset of msn_sess_conn_t
+	msn_sess_conn_t *conn;
 	
 	cur = MSNshiz.conn.cnx;
 	conn = 0;
@@ -342,6 +336,8 @@ void MSNInitShiz ()
 	MSNshiz.conn.username[0] = 0;
 	MSNshiz.conn.password[0] = 0;
 	MSNshiz.conn.status = MSN_OFFLINE;
+	gettimeofday(&MSNshiz.startup,0);
+	MSNshiz.ready = 1;
 }
 
 void init_cvars ()
@@ -354,6 +350,7 @@ void init_cvars ()
 	set_cvar("msn_correct_graphics","n","Force rewritting to prevent graphical errors. (Needed by gnome-terminal.)");
 	set_cvar("msn_auto_login","n","Automatically logon when program starts.");
 	set_cvar("msn_scrollback","200","Number of lines in scrollback buffer. (IGNORED)");
+	set_cvar("msn_complete_word","y","Complete a word or just display possibles.");
 }
 
 void set_cvar ( char *cvar, char *value, char *help )
@@ -462,17 +459,22 @@ msn_cvar_t *find_cvar ( char *cvar )
 msn_contact_t *new_contact(char *handle, char *alias)
 {
 	msn_contact_t *cont;
+	char *fullhandle;
 
 	cont = (msn_contact_t *) malloc (sizeof(msn_contact_t));
 
-	strcpy(cont->handle,handle);
+	AddHotmail(handle,&fullhandle);
+
+	strcpy(cont->handle,fullhandle);
 	strncpy(cont->alias,alias,29);
 
 	cont->status = MSN_OFFLINE; // should change straight away anyway
 
 	MSNshiz.contacts = m_list_append(MSNshiz.contacts, cont);
 
-	err_printf("new_contact: %s %d",handle,cont);
+	err_printf("new_contact: %s %d\n",handle,cont);
+
+	free(fullhandle);
 	
 	return cont;
 }
@@ -490,4 +492,30 @@ void err_printf(char *format, ...)
 		fprintf(MSNshiz.errfile,out);
 	
 	va_end(argp);
+}
+
+// calculates uptime
+void getfut(char *fut, struct timeval *tv1, struct timeval *tv2)
+{
+	int diff;
+	int days;
+	int hours;
+	int minutes;
+	int seconds;
+
+	diff = tv1->tv_sec - tv2->tv_sec;
+
+	if (diff < 0 )
+		diff = -diff;
+
+	seconds = diff % 60;
+	diff /= 60;
+	minutes = diff % 60;
+	diff /= 60;
+	hours = diff % 24;
+	diff /= 24;
+	days = diff;
+
+	snprintf(fut,30,"%3d days %02d:%02d:%02d",days,hours,minutes,seconds);
+
 }

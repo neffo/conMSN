@@ -185,5 +185,5 @@ int CompareUserName(const void * a, const void * b)
     if (!handle || !cu->userHandle)
         return (-1);
 
-    return strcmp(handle, cu->userHandle);
+    return !strcmp(handle, cu->userHandle);
 }

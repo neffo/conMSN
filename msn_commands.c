@@ -575,6 +575,8 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
             char *typingUser = strstr(mimeInfo, "TypingUser: ") + strlen("TypingUser: ");
             if (typingUser != NULL) {
                 //fprintf(stderr, "LIBMSN> %s is typing a message\n", typingUser);
+		log_printf("%s is typing a message.", typingUser);
+		// update user status too?
             }
         }
 		/*else {
@@ -722,6 +724,7 @@ int HandleOUT(MSN_Conn *conn, char **args, int numOfArgs)
 {
     mlist    node = NULL;
     MSN_Conn *connNode = NULL;
+    msn_sess_conn_t *sconn = 0;
 
     DestroyChatList(conn->chatUsers);
     DestroyChatList(conn->flUsers);
@@ -732,10 +735,10 @@ int HandleOUT(MSN_Conn *conn, char **args, int numOfArgs)
     close(conn->fd);
 
     if (conn == MSNshiz.conn.mainconn) {
-        //node = msn_connections;
 	node = MSNshiz.conn.cnx;
         while (node) {
-           connNode = node->data;
+           sconn = node->data;
+	   connNode = sconn->conn;
            DestroyChatList(connNode->chatUsers);
            DestroyChatList(connNode->flUsers);
            DestroyChatList(connNode->alUsers);
@@ -744,6 +747,7 @@ int HandleOUT(MSN_Conn *conn, char **args, int numOfArgs)
            m_input_remove(connNode);
            close(connNode->fd);
            free(connNode);
+	   free(sconn);
            node = node->next;
         }
         //m_list_free(MSNshiz.conn.cnx);
@@ -1060,6 +1064,9 @@ int HandleLST(MSN_Conn *conn, char **args, int numOfArgs)
             }
     }
 
+    if ( get_contact_by_string(args[6]) == 0 )
+	new_contact(args[6],args[7]);
+
     return 0;
 }
 
@@ -1192,9 +1199,11 @@ int Logout(MSN_Conn *conn)
 {
     mlist    node = NULL;
     MSN_Conn *connNode = NULL;
+    msn_sess_conn_t *sconn;
 
     for (node = MSNshiz.conn.cnx; node; node=node->next) {
-        connNode = node->data;
+        sconn = node->data;
+	connNode = sconn->conn;
         SendBYE(connNode);
     }
     return 0;
@@ -1371,12 +1380,14 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
     ParseArguments(responseLine, " ", &localArgs, &localNumOfArgs);
     if (localNumOfArgs != 6) {
         free(newHandle);
+	err_printf("RequestSBSession: failed. ARGC != 6\n");
         return -1;
     }
 
     if (ParseHostPort(localArgs[3], &host, &port) != 0) {
         DestroyArguments(&localArgs, localNumOfArgs);
         free(newHandle);
+	err_printf("RequestSBSession: failed. Invalid host/port combo.\n");
         return -1;
     }
 
@@ -1389,6 +1400,7 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
 
     if (ConnectToServer(newConn, host, port) != 0) {
         free(newHandle);
+	err_printf("RequestSBSession: failed. ConnectToServer failed.\n");
         return -1;
     }
 
@@ -1427,6 +1439,7 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
     // = m_list_append(msn_connections, newConn);
 
     free(newHandle);
+    err_printf("RequestSBSession: success. FD = %d\n",newConn->fd);
     return 0; 
 }
 
@@ -1443,14 +1456,24 @@ MSN_Conn *FindMSNConnectionByHandle(char *handle)
     mlist    node = NULL;
     mlist    node2 = NULL;
     MSN_Conn *connNode = NULL;
+    msn_sess_conn_t *sconn = NULL;
+
+    //FIXME: not sure if this should be AddHotmail or RemoveHotmail
+    char **fullhandle;
+//    Addhotmail(handle,fullhandle);
 
     for (node = MSNshiz.conn.cnx; node; node=node->next) {
-        connNode = node->data;
+	sconn = node->data;
+        connNode = sconn->conn;
         node2 = m_list_find_custom(connNode->chatUsers.users, handle,
-                                   CompareUserName);
+                                   CompareUserName); // doesn't appear to need @hotmail.com bit (oh well)
         if (node2 != NULL)
+	{
+//	    free(*fullhandle);
             return connNode;
+	}
     }
+//    free(*fullhandle);
     return NULL;
 }
 

@@ -51,6 +51,7 @@ typedef struct display_s
 	char log[SCROLLBACK][MAX_LOG_WIDTH];
 	int logpos;
 	int loglines;
+	int ready;
 } cdisplay_t;
 
 void screen_setup (/* cdisplay_t *display*/ );

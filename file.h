@@ -9,8 +9,8 @@ void first_run (); // test if msn has be run before
 void file_init();
 void file_end();
 
-void write_contacts_file();
-void read_contacts_file();
+void write_contacts();
+void read_contacts();
 
 void write_config();
 void read_config();
@@ -24,3 +24,4 @@ int call_ext ( char *cmd, char *user, char *data );
 void ext_msg (char *user, char *msg );
 void ext_onl (char *user, char *status);
 void ext_mail (char *mail, char *mail2);
+
