@@ -272,10 +272,10 @@ void m_input_add (int fd, MSN_CALLBACK func, MSN_Conn *conn )
 //	log_printf("am_input_add: cnx = %d conn = %d",MSNshiz.conn.cnx,conn);
 	sconn = (msn_sess_conn_t *) malloc(sizeof(msn_sess_conn_t));
 
-	sconn->fd = conn->fd;
+	sconn->fd = fd;
 	sconn->conn = conn;
 
-	err_printf("m_input_add: cnx = %d sconn = %d conn = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn);
+	err_printf("m_input_add: fd=%d cnx = %d sconn = %d conn = %d\n",fd,MSNshiz.conn.cnx,sconn,sconn->conn);
 
 	MSNshiz.conn.cnx = m_list_append(MSNshiz.conn.cnx,sconn);
 }

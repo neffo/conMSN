@@ -109,6 +109,8 @@ int main( void )
 				{
 					conn = (msn_sess_conn_t *)cur->data;
 
+					err_printf("FD_ISSET *%d\n", conn);
+
 					if (FD_ISSET(conn->fd, &MSNshiz.fds))
 					{
 						err_printf("FD_ISSET: %d\n",conn->fd);
