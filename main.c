@@ -49,6 +49,9 @@ int main( void )
 	input_init();
 
 	MSNInitShiz();
+	read_config();
+	read_contacts_file();
+	read_macros();
 	redraw_cmd_line();
 	//init_cvars();
 

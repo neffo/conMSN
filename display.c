@@ -13,12 +13,14 @@ void screen_setup ( /*cdisplay_t *display*/ )
 {
 	int i;
 
+#ifdef DYNAMIC_SCROLLBACK
 	display.log = malloc(SCROLLBACK * sizeof(char **));
 
 	for (i=0;i<SCROLLBACK;i++)
 	{
 		display.log[i] = malloc( sizeof ( char *) * MAX_LOG_WIDTH );
 	}
+#endif
 
 	initscr();
 	cbreak();

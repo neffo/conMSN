@@ -6,8 +6,8 @@
  */
 
 #define CONT_X 15 // width of contacts window
-//#define SCROLLBACK 200
-#define SCROLLBACK cvar_to_int ("msn_scrollback")
+#define SCROLLBACK 400
+//#define SCROLLBACK cvar_to_int ("msn_scrollback")
 
 #define MAX_LOG_WIDTH 120
 /*
@@ -48,7 +48,7 @@ typedef struct display_s
 	struct dispwin_s wcmd;
 	int scrw;
 	int scrh;
-	char **log;
+	char log[SCROLLBACK][MAX_LOG_WIDTH];
 	int logpos;
 	int loglines;
 } cdisplay_t;
