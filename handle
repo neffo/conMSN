@@ -1,0 +1,262 @@
+libmsn.c:    conn->serverType = DISPATCH_CONN;
+libmsn.c:    conn->chatUsers.users = NULL;
+libmsn.c:    conn->chatUsers.numOfUsers = 0;
+libmsn.c:    conn->flUsers.users = NULL;
+libmsn.c:    conn->flUsers.numOfUsers = 0;
+libmsn.c:    conn->alUsers.users = NULL;
+libmsn.c:    conn->alUsers.numOfUsers = 0;
+libmsn.c:    conn->blUsers.users = NULL;
+libmsn.c:    conn->blUsers.numOfUsers = 0;
+libmsn.c:    conn->rlUsers.users = NULL;
+libmsn.c:    conn->rlUsers.numOfUsers = 0;
+libmsn.c:    conn->cookie[0] = '\0';
+libmsn.c:    conn->commonName[0] = '\0';
+libmsn.c:    //conn->listenerID = -1;
+libmsn.c:    conn->unreadMail = 0;
+libmsn.c:    strcpy(mainconn->passwd, passwd);
+libmsn.c:    strcpy(mainconn->handle, handle);
+libmsn.c:    m_input_add(mainconn->fd, msn_callback_handler, mainconn);
+main.c:					if (FD_ISSET(conn->fd, &MSNshiz.fds))
+main.c:						err_printf("FD_ISSET: %d\n",conn->fd);
+main.c:						msn_callback_handler(conn->conn);
+main.c~:					if (FD_ISSET(conn->fd, &MSNshiz.fds))
+main.c~:						err_printf("FD_ISSET: %d\n",conn->fd);
+main.c~:						msn_callback_handler(conn->conn);
+msn_commands.c:    conn->fd = socket(AF_INET, SOCK_STREAM, 0);
+msn_commands.c:    if (conn->fd > -1) {
+msn_commands.c:        if (connect(conn->fd, (struct sockaddr *)&sin, sizeof(sin)) > -1)
+msn_commands.c:    	nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:        nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:        if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:    nwritten = write(conn->fd, commandLine, strlen(commandLine));
+msn_commands.c:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:    AddHotmail(conn->handle, &newHandle);
+msn_commands.c:    nread = read(conn->fd, message, length);
+msn_commands.c:            newIm.fd = conn->fd;
+msn_commands.c:			conn->unreadMail = data.unread;
+msn_commands.c:			conn->unreadMail += 1;
+msn_commands.c:				conn->unreadMail -= delta;			
+msn_commands.c:    write(conn->fd, commandLine, length);
+msn_commands.c:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:    write(conn->fd, commandLine, length);
+msn_commands.c:    write(conn->fd, commandLine, length);
+msn_commands.c:    DestroyChatList(conn->chatUsers);
+msn_commands.c:    DestroyChatList(conn->flUsers);
+msn_commands.c:    DestroyChatList(conn->alUsers);
+msn_commands.c:    DestroyChatList(conn->blUsers);
+msn_commands.c:    DestroyChatList(conn->rlUsers);
+msn_commands.c:    close(conn->fd);
+msn_commands.c:    RemoveUserFromChatList(&conn->chatUsers, args[1]);
+msn_commands.c:    if (conn->chatUsers.numOfUsers == 0) {
+msn_commands.c:        close(conn->fd);
+msn_commands.c:    DestroyChatList(conn->chatUsers);
+msn_commands.c:    DestroyChatList(conn->flUsers);
+msn_commands.c:    DestroyChatList(conn->alUsers);
+msn_commands.c:    DestroyChatList(conn->blUsers);
+msn_commands.c:    DestroyChatList(conn->rlUsers);
+msn_commands.c:    close(conn->fd);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_NLN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_NLN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_FLN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_FLN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_HDN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_HDN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_BSY) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_BSY);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_IDL) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_IDL);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_BRB) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_BRB);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_AWY) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_AWY);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_PHN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_PHN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[3], USER_LUN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_LUN);
+msn_commands.c:    RemoveUserFromChatList(&conn->flUsers, args[1]);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_NLN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_NLN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_FLN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_FLN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_HDN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_HDN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_BSY) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_BSY);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_IDL) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_IDL);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_BRB) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_BRB);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_AWY) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_AWY);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_PHN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_PHN);
+msn_commands.c:        if (ChangeUserState(&conn->flUsers, args[2], USER_LUN) != 0)
+msn_commands.c:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_LUN);
+msn_commands.c:        userList = &conn->flUsers;
+msn_commands.c:        userList = &conn->alUsers;
+msn_commands.c:        userList = &conn->blUsers;
+msn_commands.c:        userList = &conn->rlUsers;
+msn_commands.c:            am->handle = conn->handle;
+msn_commands.c:        userList = &conn->flUsers;
+msn_commands.c:        userList = &conn->alUsers;
+msn_commands.c:        userList = &conn->blUsers;
+msn_commands.c:        userList = &conn->rlUsers;
+msn_commands.c:        AddUserToChatList(&conn->flUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c:        AddUserToChatList(&conn->alUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c:        AddUserToChatList(&conn->blUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c:        AddUserToChatList(&conn->rlUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c:        if (SearchForUser(conn->alUsers, args[6]) == 0)  {
+msn_commands.c:                am->handle = conn->handle;
+msn_commands.c:    //if (conn->listenerID > 0)
+msn_commands.c:    close(conn->fd);
+msn_commands.c:    conn->fd = -1;
+msn_commands.c:        m_input_add(conn->fd, msn_callback_handler, conn);
+msn_commands.c:        //conn->listenerID = lID;
+msn_commands.c:    if (conn->fd == 0)
+msn_commands.c:    write(conn->fd, commandLine, length); */
+msn_commands.c:    write(conn->fd, commandLine, length);
+msn_commands.c:    write(conn->fd, commandLine, length);
+msn_commands.c:    if (conn->fd == 0)
+msn_commands.c:    write(conn->fd, commandLine, length);
+msn_commands.c:    AddHotmail(conn->handle, &newHandle); 
+msn_commands.c:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c:    DestroyChatList(conn->chatUsers);
+msn_commands.c:    DestroyChatList(conn->flUsers);
+msn_commands.c:    DestroyChatList(conn->alUsers);
+msn_commands.c:    DestroyChatList(conn->blUsers);
+msn_commands.c:    DestroyChatList(conn->rlUsers);
+msn_commands.c:    close(conn->fd);
+msn_commands.c~:    conn->fd = socket(AF_INET, SOCK_STREAM, 0);
+msn_commands.c~:    if (conn->fd > -1) {
+msn_commands.c~:        if (connect(conn->fd, (struct sockaddr *)&sin, sizeof(sin)) > -1)
+msn_commands.c~:    	nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:        nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:        if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:    nwritten = write(conn->fd, commandLine, strlen(commandLine));
+msn_commands.c~:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:    AddHotmail(conn->handle, &newHandle);
+msn_commands.c~:    nread = read(conn->fd, message, length);
+msn_commands.c~:            newIm.fd = conn->fd;
+msn_commands.c~:			conn->unreadMail = data.unread;
+msn_commands.c~:			conn->unreadMail += 1;
+msn_commands.c~:				conn->unreadMail -= delta;			
+msn_commands.c~:    write(conn->fd, commandLine, length);
+msn_commands.c~:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:    write(conn->fd, commandLine, length);
+msn_commands.c~:    write(conn->fd, commandLine, length);
+msn_commands.c~:    DestroyChatList(conn->chatUsers);
+msn_commands.c~:    DestroyChatList(conn->flUsers);
+msn_commands.c~:    DestroyChatList(conn->alUsers);
+msn_commands.c~:    DestroyChatList(conn->blUsers);
+msn_commands.c~:    DestroyChatList(conn->rlUsers);
+msn_commands.c~:    close(conn->fd);
+msn_commands.c~:    RemoveUserFromChatList(&conn->chatUsers, args[1]);
+msn_commands.c~:    if (conn->chatUsers.numOfUsers == 0) {
+msn_commands.c~:        close(conn->fd);
+msn_commands.c~:    DestroyChatList(conn->chatUsers);
+msn_commands.c~:    DestroyChatList(conn->flUsers);
+msn_commands.c~:    DestroyChatList(conn->alUsers);
+msn_commands.c~:    DestroyChatList(conn->blUsers);
+msn_commands.c~:    DestroyChatList(conn->rlUsers);
+msn_commands.c~:    close(conn->fd);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_NLN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_NLN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_FLN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_FLN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_HDN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_HDN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_BSY) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_BSY);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_IDL) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_IDL);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_BRB) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_BRB);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_AWY) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_AWY);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_PHN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_PHN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[3], USER_LUN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[3], args[4], 0, USER_LUN);
+msn_commands.c~:    RemoveUserFromChatList(&conn->flUsers, args[1]);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_NLN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_NLN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_FLN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_FLN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_HDN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_HDN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_BSY) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_BSY);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_IDL) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_IDL);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_BRB) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_BRB);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_AWY) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_AWY);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_PHN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_PHN);
+msn_commands.c~:        if (ChangeUserState(&conn->flUsers, args[2], USER_LUN) != 0)
+msn_commands.c~:            AddUserToChatList(&conn->flUsers, args[2], args[3], 0, USER_LUN);
+msn_commands.c~:        userList = &conn->flUsers;
+msn_commands.c~:        userList = &conn->alUsers;
+msn_commands.c~:        userList = &conn->blUsers;
+msn_commands.c~:        userList = &conn->rlUsers;
+msn_commands.c~:            am->handle = conn->handle;
+msn_commands.c~:        userList = &conn->flUsers;
+msn_commands.c~:        userList = &conn->alUsers;
+msn_commands.c~:        userList = &conn->blUsers;
+msn_commands.c~:        userList = &conn->rlUsers;
+msn_commands.c~:        AddUserToChatList(&conn->flUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c~:        AddUserToChatList(&conn->alUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c~:        AddUserToChatList(&conn->blUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c~:        AddUserToChatList(&conn->rlUsers, args[6], args[7], i, USER_FLN);
+msn_commands.c~:        if (SearchForUser(conn->alUsers, args[6]) == 0)  {
+msn_commands.c~:                am->handle = conn->handle;
+msn_commands.c~:    //if (conn->listenerID > 0)
+msn_commands.c~:    close(conn->fd);
+msn_commands.c~:    conn->fd = -1;
+msn_commands.c~:        m_input_add(conn->fd, msn_callback_handler, conn);
+msn_commands.c~:        //conn->listenerID = lID;
+msn_commands.c~:    if (conn->fd == 0)
+msn_commands.c~:    write(conn->fd, commandLine, length); */
+msn_commands.c~:    write(conn->fd, commandLine, length);
+msn_commands.c~:    write(conn->fd, commandLine, length);
+msn_commands.c~:    if (conn->fd == 0)
+msn_commands.c~:    write(conn->fd, commandLine, length);
+msn_commands.c~:    AddHotmail(conn->handle, &newHandle); 
+msn_commands.c~:    nwritten = write(conn->fd, commandLine, length);
+msn_commands.c~:    if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
+msn_commands.c~:    DestroyChatList(conn->chatUsers);
+msn_commands.c~:    DestroyChatList(conn->flUsers);
+msn_commands.c~:    DestroyChatList(conn->alUsers);
+msn_commands.c~:    DestroyChatList(conn->blUsers);
+msn_commands.c~:    DestroyChatList(conn->rlUsers);
+msn_commands.c~:    close(conn->fd);
+msn_shiz.c:	sconn->fd = conn->fd;
+msn_shiz.c:	sconn->conn = conn;
+msn_shiz.c:	err_printf("m_input_add: cnx = %d sconn = %d conn = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn);
+msn_shiz.c:		err_printf("m_input_rem: cnx = %d sconn = %d conn = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn);
+msn_shiz.c:		if ( sconn->conn->fd == conn->fd )
+msn_shiz.c:		FD_SET(conn->conn->fd,&MSNshiz.fds);
+msn_shiz.c:		MSNshiz.maxfds = conn->fd;
+msn_shiz.c~:	sconn->fd = conn->fd;
+msn_shiz.c~:	sconn->conn = conn;
+msn_shiz.c~:	fprintf(MSNshiz.errfile,"m_input_add: cnx = %d sconn = %d conn = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn);
+msn_shiz.c~:		fprintf(MSNshiz.errfile,"m_input_rem: cnx = %d sconn = %d conn = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn);
+msn_shiz.c~:		if ( sconn->conn->fd == conn->fd )
+msn_shiz.c~:		FD_SET(conn->conn->fd,&MSNshiz.fds);
+msn_shiz.c~:		MSNshiz.maxfds = conn->fd;

@@ -1,0 +1,29 @@
+( + really important    - fairly important )
+
++ Test the bloody thing (especially the setup_fds() function and those 
+	related to it) (kinda DONE: setup_fds() appears to work as it should)
++ add debug output for all functions to properly test what the hell is going on
+	and whats going wrong (err_printf() is used for this) / check function
+	return values
+- add support for external commands on events ( message, user coming online, 
+	etc) (kinda DONE)
+- give it a name
+- scrolling contact list (DONE)
+- multiuser chat stuff (going to be a bitch)
+- view user profiles (using links or whatever) && view hotmail inbox
+- move commands (do_*) to separate file
+- add autoaway code (DONE)
+- fix cvar code (use mlists?) (DONE)
+- allow resizing of windows (ie contact list) && automagic resizing on xterm 
+	resize
+- do proper clean up on exit (is this actually necessary?)
+- use mlists for commands as well ? (kinda goes with macros - below)
+- user defined macros
++ initial run setup (set username and password, create directory and so forth)
++ ability to set aliases for users and work out how to get user specified 
+	aliases from the server
++ fix user tab completion so that it completes aliases (plus add conversion for 
+	other functions)
++ fix contact list corruption when scrolling main window
+- allow user to use commands even when in a chat ( by adding a "/" in front of 
+	the command)	
