@@ -292,21 +292,23 @@ void m_input_add (int fd, MSN_CALLBACK func, MSN_Conn *conn )
 	sconn->fd = fd;
 	sconn->conn = conn;
 
-	err_printf("m_input_add: fd=%d cnx = %d sconn = %d conn = %d\n",fd,MSNshiz.conn.cnx,sconn,sconn->conn);
+	err_printf("m_input_add: fd=%d cnx = %x sconn = %x conn = %x\n",fd,MSNshiz.conn.cnx,sconn,sconn->conn);
 
 	MSNshiz.conn.cnx = m_list_append(MSNshiz.conn.cnx,sconn);
 }
 void m_input_remove ( MSN_Conn *conn )
 {
-//	log_printf("am_input_remove: cnx = %d conn = %d",MSNshiz.conn.cnx,conn);
 	mlist cur;
 	msn_sess_conn_t *sconn;
 
+
+	err_printf("m_input_remove( Mainconn = %x, conn = %x, fd = %d)\n",MSNshiz.conn.cnx,conn,conn->fd);
+	
 	for (cur = MSNshiz.conn.cnx;cur;cur=cur->next)
 	{
 		sconn = (msn_sess_conn_t *)cur->data;
 
-		err_printf("m_input_rem: cnx = %d sconn = %d conn = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn);
+		err_printf("m_input_rem: cnx = %x sconn = %x conn = %x fd = %d\n",MSNshiz.conn.cnx,sconn,sconn->conn,sconn->fd);
 
 		if ( sconn->conn->fd == conn->fd )
 		{
@@ -332,6 +334,9 @@ void setup_fds()
 	for(;cur;cur=cur->next)
 	{
 		conn = ( msn_sess_conn_t * ) cur->data;
+
+	//	err_printf("setup_fds() : fd = %d\n",conn->conn->fd);
+		
 		FD_SET(conn->conn->fd,&MSNshiz.fds);
 	}
 
@@ -507,6 +512,8 @@ void err_printf(char *format, ...)
 
 //	if (cvar_true("msn_debug"))
 		fprintf(MSNshiz.errfile,out);
+
+	fflush(stderr);
 	
 	va_end(argp);
 }

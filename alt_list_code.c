@@ -46,7 +46,7 @@ mlist m_list_append ( mlist list, void *data)
 	}
 
 #ifdef DEBUG
-	err_printf("m_list_append: (NEW) ORIG:%d NEW:%d DATA: %d\n",list,new,data);
+	err_printf("m_list_append: (NEW) ORIG:%x NEW:%x DATA: %x\n",list,new,data);
 #endif
 	return list;
 }
@@ -63,15 +63,19 @@ mlist m_list_remove ( mlist list, void *data)
 	first = cur;
 	
 	// FIXME: use a function to do this
+	//
+	err_printf("m_list_remove(list = %x, data = %x)\n",list,data);
 	
 	while ( cur && cur->data != data )
 	{
-		cur = cur->next;
 		prev = cur;
+		cur = cur->next;
 	}
 
 	if ( !cur ) // not found
 		return 0;
+
+	err_printf("m_list_remove: cur = %x data = %x\n",cur,cur->data);
 
 	next = cur->next;
 
@@ -80,7 +84,6 @@ mlist m_list_remove ( mlist list, void *data)
 			first = next;
 		else
 			first = 0;
-
 
 	if (prev)
 		prev->next = next;
@@ -93,6 +96,8 @@ mlist m_list_remove ( mlist list, void *data)
 
 	// FIXME: i'm not 100% sure we should be doing this
 	free(cur);
+
+	
 
 	return first;
 	

@@ -702,6 +702,7 @@ int HandleBye(MSN_Conn *conn, char **args, int numOfArgs)
     if (numOfArgs < 2)
         return -1;
 
+    err_printf("HandleBye ( %x, %s[1], %d )\n",conn,args[1],numOfArgs);
 
     RemoveUserFromChatList(&conn->chatUsers, args[1]);
     if (conn->chatUsers.numOfUsers == 0) {
@@ -1277,7 +1278,7 @@ static int MSN_Read(int fd, char *buffer, int nItems, int *count)
         else if (c == '\n') {
             buffer[bcount] = '\0';
             *count += 1;
-	    err_printf("MSN_Read: BUFFER=\"%s\" COUNT=%d FD=%d ITEMS=%d\n",buffer,fd,count,nItems);
+	    err_printf("MSN_Read: BUFFER=\"%s\" COUNT=%d FD=%d ITEMS=%d\n",buffer,count,fd,nItems);
             return 0;
         }
         else {
@@ -1492,12 +1493,13 @@ MSN_Conn *FindMSNConnectionByHandle(char *handle)
 
 int KillConnection(MSN_Conn *conn)
 {
+    err_printf("KillConnection: 0x%x FD:%d\n",conn,conn->fd);
     DestroyChatList(conn->chatUsers);
     DestroyChatList(conn->flUsers);
     DestroyChatList(conn->alUsers);
     DestroyChatList(conn->blUsers);
     DestroyChatList(conn->rlUsers);
-    m_input_remove(conn);
+    m_input_remove(conn);   
     close(conn->fd);
     //msn_connections = m_list_remove(msn_connections, conn);
 

@@ -572,6 +572,7 @@ void process_cmd()
 	char *args[2];
 	char *eq;
 	int match;
+	int cmdn;
 	macro_t *macro;
 	msn_contact_t *cont;
 	
@@ -591,8 +592,20 @@ void process_cmd()
 		if (string_to_args(input.cmd,args,2) != 2 )
 			goto endbit;
 		//err_printf("after: %s",args[1]);
+
+		cmdn = get_cmd_by_string( args[0] );
+
+		err_printf("get_cmd_by_string(%s) returned %d\n",args[0],cmdn);
+
+		if ( cmdn == -1 )
+		{
+			log_printf("eUnknown command.");
+			clr_cmdline();
+			command == 0;
+			goto endbit;
+		}
 		
-		command = &commands[get_cmd_by_string( args[0] )];
+		command = &commands[cmdn];
 
 		if (command == 0)
 			goto endbit;
@@ -605,7 +618,8 @@ void process_cmd()
 
 		clr_cmdline();
 
-		command->do_it(args[1]);
+		if (command)
+			command->do_it(args[1]);
 	
 		endbit:
 		if (!command)

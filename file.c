@@ -151,7 +151,7 @@ void write_config()
 
 	if (cfile == NULL)
 	{
-		//log_printf("eERROR: unable to write config file.");
+		log_printf("eERROR: unable to write config file.");
 		return;
 	}
 

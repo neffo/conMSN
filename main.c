@@ -20,6 +20,8 @@ int quit;
 extern int errno;
 
 //#define TEST 
+//
+//#undef USE_ERR_LOG
 
 int main( void )
 {
@@ -109,16 +111,19 @@ int main( void )
 				{
 					conn = (msn_sess_conn_t *)cur->data;
 
-					err_printf("FD_ISSET *%d\n", conn);
+					err_printf("Checking FD_ISSET *%x\n", conn);
 
 					if (FD_ISSET(conn->fd, &MSNshiz.fds))
 					{
 						err_printf("FD_ISSET: %d\n",conn->fd);
 						msn_callback_handler(conn->conn);
+
+						goto again; // HACK to get it to skip FDs that may have been deleted or whatnot
 					}
 				}
 				
 			}
+			again:
 		}
 		
 		redraw_status();
