@@ -4,11 +4,19 @@
 #define EXT_ONL "xstat"
 #define EXT_MAIL "xmail"
 
+void first_run (); // test if msn has be run before
+
+void file_init();
+void file_end();
+
 void write_contacts_file();
 void read_contacts_file();
 
 void write_config();
 void read_config();
+
+void write_macros();
+void read_macros();
 
 void log_event ( char *alias, char *message, int day, int month, int hour, int min );
 

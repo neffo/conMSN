@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/stat.h> 
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
@@ -25,6 +26,7 @@ void input_init (/* input_t *input*/)
 	input.history_pos=0;
 	input.inputbuf = 0;
 	input.input_private = 0;
+	input.macros = 0;
 	memset(&history,0,sizeof(char) * CMD_HISTORY * MAX_INPUT);
 	do_about(0);
 }
@@ -390,7 +392,8 @@ void line_docmd()
 		input.cmd[0] = 0;
 		input.inputbuf = input.cmd;
 		input.input_size = 0;
-		ignore = 1;
+		ignore = 1; 	// hack so it doesn't overwrite some of the above 
+				// values
 		break;
 	case LOGIN_PASSWORD:
 		strcpy(MSNshiz.conn.password,input.inputbuf);
@@ -484,6 +487,7 @@ void process_cmd()
 	char *arg;
 	char *eq;
 	int match;
+	macro_t *macro;
 	
 	i=0;
 	command=0;
@@ -493,44 +497,55 @@ void process_cmd()
 
 	add_to_history(input.cmd);
 
-	eq = strchr(input.cmd,'=');
+	//eq = strchr(input.cmd,'=');
 
 	if (!eq)
 	{
-	
-	while (i<input.len && input.cmd[i] != ' ')
-	{
-		cmd[i]=input.cmd[i];
-		i++;
-	}
-	cmd[i]=0;
+		while (i<input.len && input.cmd[i] != ' ')
+		{
+			cmd[i]=input.cmd[i];
+			i++;
+		}
+		cmd[i]=0;
 
-//	log_println(cmd);
-	i=0;
-	while ( commands[i].cmdn != BADCMD )
-	{
-		if (strncasecmp(commands[i].cmd,cmd,4)==0)
-			command = &commands[i];
-		i++;
-	}
+		i=0;
+		while ( commands[i].cmdn != BADCMD )
+		{
+			if (strncasecmp(commands[i].cmd,cmd,4)==0)
+				command = &commands[i];
+			i++;
+		}
 
-	if (command == 0)
-		goto endbit;
-	
-	arg=input.cmd + strlen(cmd);
+		if (command == 0)
+			goto endbit;
+		
+		arg=input.cmd + strlen(cmd);
 
-	arg++;
+		arg++;
 
-	if (input.len == strlen(cmd))
-		arg[0]=0;
+		if (input.len <= strlen(cmd)+1)
+			arg[0]=0;
 	
-	command->do_it(arg);
+		command->do_it(arg);
 	
-	endbit:
-	if (!command)
-	{
-		log_println("eUnknown command.");
-	}
+		endbit:
+		if (!command)
+		{
+			//log_println("eUnknown command.");
+
+			for ( cur = input.macros; cur; cur=cur->next)
+			{
+				macro = cur->data;
+				if (strcasecmp(macro->cmd,cmd)==0)
+				{
+					command = &commands[macro->cmdn];
+					arg=input.cmd;
+					sprintf(arg,macro->string,input.ev_cont->handle);
+					command->do_it(arg);
+				}
+				
+			}
+		}
 	}
 	else
 	{
@@ -874,11 +889,13 @@ void do_cvar_set ( char *string )
 
 	space = strchr(string,' ');
 
-
 	cv = find_cvar ( string );
 
-	if (!cv)
+	if (!cv && !space)
+	{
+		cvar_list(0);
 		return;
+	}
 
 	if (space != 0)
 	{
@@ -895,9 +912,107 @@ void do_cvar_set ( char *string )
 	}
 }
 
+void do_macro ( char *string )
+{
+
+	// string = "reply message %s"
+	//           ^str  ^space  ^space2
+	char *space; // start of macro
+	char *space2; // macro bit just after command
+	int cmd;
+	macro_t *macro;
+	macro_t *found;
+	mlist cur;
+
+	found = 0;
+	
+	space = strchr(string,' ');
+
+	if (space)
+	{
+		*space=0;
+		space++;
+	}
+
+	for (cur = input.macros; cur; cur=cur->next)
+	{
+		macro = cur->data;
+
+		if (strncasecmp(macro->cmd,string,strlen(macro->cmd))==0)
+			found = macro;
+	}
+
+	if (!found && space) // create new macro
+	{
+		space2 = strchr(space,' ');
+
+		if (space2)
+		{
+			*space2 = 0;
+			space2++;
+		}
+
+		cmd = get_cmd_by_string( space );
+
+		if (cmd)
+		{
+			macro = (macro_t *) malloc (sizeof(macro_t));
+			macro->cmdn = cmd;
+			strcpy(macro->string,space2);
+			strcpy(macro->cmd,string);
+
+			input.macros = m_list_append(input.macros,macro);
+		}
+		else
+		{
+			log_printf("eInvalid command name.");
+		}
+	}
+	else if (found && space) // set macro to value of space
+	{
+		space2 = strchr(space,' ');
+
+		if (space2)
+		{
+			*space2 = 0;
+			space2++;
+		}
+
+		cmd = get_cmd_by_string( space );
+
+		if (cmd)
+		{
+			macro = found;
+			macro->cmdn = cmd;
+			strcpy(macro->string,space2);
+			strcpy(macro->cmd, string);
+		}
+		else
+			log_printf("eInvalid command name.");
+
+	}
+	else if (found) // print cvar value
+	{
+		log_printf("a%s -> \"%s %s\"",found->cmd, commands[found->cmdn].cmd, found->string);
+	}
+	else
+	{
+		for (cur = input.macros;cur; cur=cur->next)
+		{
+			found = cur->data;
+
+			log_printf("a%s -> \"%s %s\"",found->cmd, commands[found->cmdn].cmd, found->string);
+		}
+	}
+			
+}
+
 void do_setup ( char *string )
 {
-	// FIXME: create directory
+	struct stat fs;
+	char dir[256];
+
+	log_println("aPlease enter your MSN details.");
 
 	input.in_mode = IN_LINE;
 	input.current_cmd = LOGIN_USER;

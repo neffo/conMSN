@@ -33,7 +33,9 @@ typedef struct input_s
 	int line;
 	int curspos;
 //	int contact; // current contact selected, change with [ and ] and with message command
-	msn_contact_t *contact;
+	msn_contact_t *contact; // currently selected contact
+	msn_contact_t *ev_cont; // last contact to cause event
+	mlist macros;
 	int history_pos;
 	char cmd[MAX_INPUT];
 	char prompt[30]; // prompt in IN_LINE input mode
@@ -54,10 +56,11 @@ typedef enum cmd_enum
 	WRITECONT, 
 	READCONT, 
 	AUTH, // authorise user who last requested it
-	LISTCVAR,
-	SET, // set cvar
+//	LISTCVAR,
+	SET, // set cvar && now lists cvars as well
 	CHAT,
 	ABOUT,
+	MACRO,
 	SETUP,
 	QUIT,
 	MAX_CMDS
@@ -69,6 +72,7 @@ typedef enum complete_n
 	CMDS,
 	STATUS,
 	CVARS,
+	MACROS,
 	NONE
 } complete_t;
 
@@ -81,6 +85,13 @@ typedef struct cmd_s
 	void (*do_it)(char *);
 	complete_t comp_t;
 } cmd_t;
+
+typedef struct macro_s
+{
+	char cmd[30];
+	char string[256];
+	cmdnum_t cmdn;
+} macro_t;
 
 #define BADCMD MAX_CMDS
 
@@ -99,6 +110,7 @@ void do_chat(char *);
 void do_about (char *);
 void do_cvar_set (char *);
 void do_setup ( char *);
+void do_macro ( char *);
 msn_contact_t *prev_contact ();
 msn_contact_t *next_contact ();
 
@@ -114,10 +126,11 @@ static cmd_t commands[MAX_CMDS+1] =
 	WRITECONT,"writecontacts","","Saves config file.",write_contacts_file,NONE,
 	READCONT,"readcontacts","","Parses the config file.",read_contacts_file,NONE,
 	AUTH,"auth","","Authorise last user who requested it.",cMSN_Authorize,NONE,
-	LISTCVAR,"cvars","","Display values of cvars.",cvar_list,NONE,
+//	LISTCVAR,"cvars","","Display values of cvars.",cvar_list,NONE,
 	SET,"set","<cvar> <value>","Set cvar value.",do_cvar_set,CVARS,
 	CHAT,"chat","[<handle>]","Enter chat with user.",do_chat,CONTACTS,
-	SETUP,"setup","","Rerun initial setup.",do_setup,NONE,
+	MACRO,"macro","[<macro name>] [<command string>]","Create a user defined macro.",do_macro,MACROS,
+	SETUP,"initial_setup","","Rerun initial setup.",do_setup,NONE,
 	ABOUT,"about","","Display information about program.",do_about,NONE,
 	QUIT,"quit","","Exits the program.",do_quit,NONE,
 	MAX_CMDS,0,0,0,0

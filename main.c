@@ -27,6 +27,8 @@ int main( void )
 	mlist cur;
 	msn_sess_conn_t *conn;
 
+	first_run ();
+	
 #ifdef USE_ERR_LOG
 
 	MSNshiz.errfile = fopen("/home/ineffable/.msn/error.log","a+");
@@ -52,15 +54,20 @@ int main( void )
 
 	MSNRegisterCallbacks();
 
-	read_contacts_file();
-	read_config();
+	if (MSNshiz.first_run)
+	{
+		do_setup(0);
+		redraw_cmd_line();
+	}
+
+	file_init();
 	
 	redraw_status();
 	update_windows();
 
 	setup_autoaway();
 
-	if (cvar_true("msn_auto_login"))
+	if (!MSNshiz.first_run && cvar_true("msn_auto_login"))
 	{
 		//log_printf("aAutologging in.");
 		//update_windows();
@@ -104,8 +111,9 @@ int main( void )
 		redraw_status();
 		update_windows();
 	}
-	write_contacts_file();
-	write_config();
+
+	file_end();
+	
 	screen_end();
 
 	if (MSNshiz.errfile != stderr)

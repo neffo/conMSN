@@ -485,7 +485,9 @@ void err_printf(char *format, ...)
 	va_start(argp,format);
 
 	vsnprintf(out,1024,format,argp);
-	fprintf(MSNshiz.errfile,out);
+
+//	if (cvar_true("msn_debug"))
+		fprintf(MSNshiz.errfile,out);
 	
 	va_end(argp);
 }

@@ -276,6 +276,7 @@ void redraw_main()
 		{
 			hline(ACS_HLINE,display.wmain.winw);
 			line++;
+			//color_set(COLOR_BLUE,0);
 		}
 		// added ability to have text in horizontal line
 		if ( *line != '!')

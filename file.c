@@ -6,11 +6,41 @@
 #include <errno.h>
 #include "msn_shiz.h"
 #include "display.h"
+#include "input.h"
 #include "file.h"
 
 extern msn_shiz_t MSNshiz;
+extern input_t input;
 
 extern char **environ;
+
+void first_run ()
+{
+	char dir[256];
+	struct stat fs;
+
+	sprintf(dir,"%s/.msn",getenv("HOME"));
+
+	if ( stat(dir,&fs) != 0 )
+	{
+		call_ext ( "mkdir", "--mode=0755", dir );
+		MSNshiz.first_run = 1;
+	}
+}
+
+void file_init()
+{
+	read_contacts_file();
+	read_config();
+	read_macros();
+}
+
+void file_end()
+{
+	write_contacts_file();
+	write_config();
+	write_macros();
+}
 
 void write_contacts_file()
 {
@@ -188,6 +218,81 @@ void read_config()
 	fclose(cfile);
 }
 
+void write_macros()
+{
+	FILE *cfile;
+	char file[256];
+	mlist cur;
+	macro_t *macro;
+
+	sprintf(file,"%s/.msn/macros",getenv("HOME"));
+	cfile = fopen(file,"w+");
+
+	if (cfile == NULL)
+	{
+		log_printf("eERROR: unable to write macro file.");
+		return;
+	}
+
+	for(cur=input.macros;cur;cur=cur->next)
+	{
+		macro=cur->data;
+		fprintf(cfile,"%s %s %s\n",macro->cmd,commands[macro->cmdn].cmd,macro->string);
+	}
+	fclose(cfile);
+}
+
+void read_macros()
+{
+	FILE *cfile;
+	char file[256];
+	char line[256];
+	char *space;
+	char *space2;
+	int cmd;
+	int c;
+	
+	mlist cur;
+	macro_t *macro;
+
+	sprintf(file,"%s/.msn/macros",getenv("HOME"));
+	cfile = fopen(file,"r");
+
+	if (cfile == NULL)
+	{
+		log_printf("eERROR: unable to read macro file.");
+		return;
+	}
+	c = 0;
+	while ( fgets(line,256,cfile) )
+	{
+		// "reply message %s"
+		//  ^file ^space  ^space2
+		//       0       0  0
+		line[strlen(line)-1] = 0;
+		space = strchr(line,' ');
+		*space = 0;
+		space++;
+		space2 = strchr(space,' ');
+		*space2 = 0;
+		space2++;
+		cmd = get_cmd_by_string( space );
+		//err_printf("read_macros: %s %s %s\n",line,space,space2);
+		if (cmd)
+		{
+			macro = (macro_t *) malloc (sizeof(macro_t));
+			macro->cmdn = cmd;
+			strcpy(macro->string,space2);
+			strcpy(macro->cmd,line);
+			input.macros = m_list_append(input.macros,macro);
+			c++;
+		}
+	}
+
+	err_printf("%d macros read.\n",c);
+
+	fclose(cfile);
+}
 
 void log_event ( char *alias, char *message, int day, int month, int hour, int min )
 {

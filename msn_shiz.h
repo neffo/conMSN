@@ -90,6 +90,7 @@ typedef struct msn_shiz_s
 	MSN_AuthMessage_PTR authdata;
 	fd_set fds;
 	int maxfds;
+	int first_run;
 	//FILE *errfile;
 	void *errfile;
 } msn_shiz_t;
