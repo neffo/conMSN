@@ -604,7 +604,7 @@ void process_cmd()
 		}
 
 		clr_cmdline();
-		
+
 		command->do_it(args[1]);
 	
 		endbit:
@@ -672,6 +672,7 @@ void clr_cmdline()
 	input.curspos=0;
 	input.history_pos=0;
 	redraw_cmd_line();
+	//wredrawln(stdscr,display.wcmd.sy,1);
 }
 		
 void do_login(char *string)
@@ -1168,6 +1169,37 @@ void do_set_alias ( char *string)
 	else
 	{
 		log_printf("eInvalid number of args.");
+	}
+	
+}
+
+void do_show_conns ( char *string)
+{
+	msn_sess_conn_t *sconn;
+	MSN_Conn *conn;
+	ChatSession *cs;
+	ChatUser *guy;
+	mlist users;
+	mlist curc;
+	mlist curu;
+	int i,j;
+
+	i=0;
+	for (curc = MSNshiz.conn.cnx; curc; curc=curc->next)
+	{
+		sconn = curc->data;
+		conn = sconn->conn;
+		cs = &conn->chatUsers;
+		users = cs->users;
+
+		log_printf("aConnection # %d fd = %d :",i,conn->fd);
+		j=0;
+		for ( curu = users; curu; curu=curu->next)
+		{
+			guy = curu->data;	
+			log_printf(" User # %d Handle = %s Alias = %s",j,guy->userHandle,guy->userFriendlyHandle);
+		}
+		
 	}
 	
 }

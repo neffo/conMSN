@@ -39,3 +39,4 @@ X write macros to file on exit and read in on startup (DONE)
 + find all mistaken uses of MSN_Conn when it should be msn_sess_conn_t (ie when
 	handling MSNshiz.conn.cnx). in order to get MSN_Conn pointer you need to
 	use the conn part of the msn_conn_sess_t type. (DONE-ish)
+- rework the handling of connections, because MSN multiuser chats are apprently indistinguishable from single user chats

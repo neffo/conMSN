@@ -64,6 +64,7 @@ typedef enum cmd_enum
 	ABOUT,
 	MACRO,
 	ALIAS,
+	SHOW_CONNS,
 	SETUP,
 	QUIT,
 	MAX_CMDS
@@ -118,11 +119,12 @@ void do_cvar_set (char *);
 void do_setup ( char *);
 void do_macro ( char *);
 void do_set_alias ( char *);
+void do_show_conns ( char *);
 msn_contact_t *prev_contact ();
 msn_contact_t *next_contact ();
 
 static cmd_t commands[MAX_CMDS+1] =
-// { command #, command name, args, description, func, complete type }
+// {command #, command name, args, description, func, complete type, argc, pri }
 {
 	LOGIN, "login","", "Initiates the MSN Login process.",do_login,NONE,0,1,
 	CHSTATUS, "status","<status>", "Changes the visible user state.",do_chstatus,STATUS,1,2,
@@ -135,6 +137,7 @@ static cmd_t commands[MAX_CMDS+1] =
 	CHAT,"chat","[<handle>]","Enter chat with user.",do_chat,CONTACTS,1,1,
 	MACRO,"macro","[<macro name>] [<command string>]","Create a user defined macro.",do_macro,MACROS,2,1,
 	ALIAS,"rename","<user/alias> <new alias>","Set friendly name for user.",do_set_alias,CONTACTS,2,2,
+	SHOW_CONNS,"connections","","Display current connections and users associated with them.",do_show_conns,NONE,0,1,
 	SETUP,"initial_setup","","Rerun initial setup.",do_setup,NONE,0,1,
 	ABOUT,"about","","Display information about program.",do_about,NONE,0,2,
 	QUIT,"quit","","Exits the program.",do_quit,NONE,0,1,
