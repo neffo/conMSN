@@ -530,7 +530,7 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
 			data.unread += (int) strtol(tmp, &decodedIm, 10);
 			conn->unreadMail = data.unread;
 			
-			if ((data.unread > 0) && (msn_event[MSN_MAIL] != NULL)) {
+			if ((data.unread > 0) /*&& (msn_event[MSN_MAIL] != NULL)*/) {
 				(*msn_event[MSN_MAIL])(&data);
 			}
 		}
@@ -577,7 +577,7 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
 		}
         else if (strstr(mimeInfo, "text/x-msmsgscontrol")) {
             char *typingUser = strstr(mimeInfo, "TypingUser: ") + strlen("TypingUser: ");
-            if (typingUser != NULL) {
+            if (typingUser != NULL && cvar_true("msn_show_typing")) {
                 //fprintf(stderr, "LIBMSN> %s is typing a message\n", typingUser);
 		log_printf("%s is typing a message.", typingUser);
 		// update user status too?
@@ -1071,6 +1071,8 @@ int HandleLST(MSN_Conn *conn, char **args, int numOfArgs)
 
     if ( get_contact_by_string(args[6]) == 0 )
 	new_contact(args[6],args[7]);
+
+   // UPDATE STATUS OF USER
 
     return 0;
 }

@@ -44,6 +44,7 @@ int AddUserToChatList(ChatSession *chatSession, char *userHandle,
     mlist node;
     ChatUser *cu;
     ChatUser *newUser;
+    MSN_StatusChange *sc;
 
     node = m_list_find_custom(chatSession->users, userHandle, CompareUserName);
     if (node != NULL) {
@@ -61,7 +62,20 @@ int AddUserToChatList(ChatSession *chatSession, char *userHandle,
  
     chatSession->users = m_list_append(chatSession->users, newUser); 
     chatSession->numOfUsers += 1;
-    err_printf("AddUserToChatList: %s\n",userHandle);
+    err_printf("AddUserToChatList: %s STATUS: %d\n",userHandle,userState);
+
+    sc = (MSN_StatusChange*)malloc(sizeof(MSN_StatusChange));
+
+    if ( sc == NULL)
+	    return -1;
+
+    sc->handle = userHandle;
+    sc->newStatus = userState; 
+
+    MSNStatusChange(sc);
+
+    free(sc);
+    
     return 0;
 }
 

@@ -250,6 +250,7 @@ void redraw_main()
 	addstr("[conMSN]");
 	
 	color_set(COLOR_WHITE,0);
+
 	for(i=0;i<(display.wmain.winh+1);i++)
 	{
 		move(i+1,1);
@@ -512,7 +513,7 @@ void redraw_status ()
 	snprintf(status,display.wcontacts.winw+1,"[L: %d/%d C: %d]",nco,nc,cc);
 	addstr(status);
 	move(++y,x);
-	snprintf(status,display.wcontacts.winw+1,"[St: %s]",
+	snprintf(status,display.wcontacts.winw+1,"[St: %7s]",
 			msn_long_status[MSNshiz.conn.status]);
 	addstr(status);
 
@@ -560,6 +561,9 @@ void log_println(char *string)
 	count = 0;
 
 	//ptr = string;
+
+	if ( (SCROLLBACK-display.logpos) > display.loglines)
+		display.logpos = SCROLLBACK;
 
 	if (strchr(SPECIAL_CHARS,*string))
 	{
@@ -692,6 +696,8 @@ void log_scroll_up()
 	int maxlogpos;
 
 	// comments refer to conmsn MAXIMISED
+	//
+	err_printf("pre-logpos: %d\n",display.logpos);
 	
 	display.logpos-=5; // 400 - 5 = 395
 	if (display.logpos < display.wmain.winh)
@@ -705,7 +711,7 @@ void log_scroll_up()
 	if ( display.logpos < maxlogpos ) // yes
 		display.logpos = maxlogpos; // 400
 
-//	log_printf("maxlogpos = %d\n",maxlogpos);
+	err_printf("post-logpos = %d\n",display.logpos);
 	
 	redraw_main();
 }

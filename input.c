@@ -1211,7 +1211,7 @@ void do_show_conns ( char *string)
 		for ( curu = users; curu; curu=curu->next)
 		{
 			guy = curu->data;	
-			log_printf(" User # %d Handle = %s Alias = %s",j,guy->userHandle,guy->userFriendlyHandle);
+			log_printf(" User # %d Handle = %s Alias = %s Cookie = %s",j,guy->userHandle,guy->userFriendlyHandle,conn->cookie);
 		}
 		
 	}

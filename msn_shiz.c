@@ -92,7 +92,7 @@ void MSNStatusChange(void *data)
 	if (cvar_true("msn_call_ext"))
 		ext_onl(contact->alias, msn_long_status[contact->status]);
 
-	log_printf("a%s is online.",contact->alias);
+	log_printf("a%s is %s.",contact->alias,msn_long_status[contact->status]);
 	
 	redraw_status();
 }
@@ -373,6 +373,7 @@ void init_cvars ()
 	set_cvar("msn_auto_login","n","Automatically logon when program starts.");
 	set_cvar("msn_scrollback","200","Number of lines in scrollback buffer. (IGNORED)");
 	set_cvar("msn_complete_word","y","Complete a word or just display possibles.");
+	set_cvar("msn_show_typing","y","Display typing user notification.");
 }
 
 void set_cvar ( char *cvar, char *value, char *help )

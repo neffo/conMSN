@@ -21,7 +21,7 @@ extern int errno;
 
 //#define TEST 
 //
-#undef USE_ERR_LOG
+//#undef USE_ERR_LOG
 
 int main( void )
 {
@@ -73,7 +73,9 @@ int main( void )
 		redraw_cmd_line();
 	}
 
+	
 	//file_init();
+	//
 	
 	redraw_status();
 	update_windows();
@@ -87,6 +89,7 @@ int main( void )
 		cMSN_Login();
 		update_windows();
 	}
+
 
 	while (!quit)
 	{
