@@ -30,13 +30,13 @@ proud of it. I don't know if I ever showed it to anyone at the time.
 I had to fix a few problems, but it was compiling (with warnings) in about 30
 minutes.
 
-Requirements:
+## Requirements
 - libncurses & development libraries
 - for it to be the year 2002
 - an unrequited love in the form of a MSN contact
 - *HUGS*
 
-Things to note:
+## Things to note
 - conMSN never really worked reliably, it would segfault but never when I was
   able to diagnose it (in a screen session usually)
 - calling it version 0.9.2 was really a bit of an overreach
@@ -56,19 +56,18 @@ len = (int)(strchr(handle,'@') - strlen(handle));
 ~~~
 - I never really like using MSN ... but I wrote this??
 
-Screenshots:
+## Screenshots
 ![2002 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2002.jpg)
-![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2017.jpg)
+![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conMSN-2017.jpg)
 
-
-Build:
+## Build Instructions
 ~~~
 git clone etc...
 cd conmsn
 make
 ~~~
 
-Run
+## Running
 ~~~
 ./console
 ~~~
