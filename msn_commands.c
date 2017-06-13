@@ -36,6 +36,7 @@
 #include "parse_utils.h"
 #include "chat_lists.h"
 #include "md5.h"
+#include "input.h"
 
 #include "msn_shiz.h"
 //#include "libproxy/libproxy.h"
@@ -71,7 +72,7 @@ static int MSN_Read(int fd, char *buffer, int nItems, int *count);
 ** Input:   conn   - connection structure
 **          host   - hostname of dispatch server
 **          port   - port number of dispatch server
-** Output:  0 on success, -1 on failure 
+** Output:  0 on success, -1 on failure
 */
 
 int ConnectToServer(MSN_Conn *conn, char *host, int port)
@@ -81,7 +82,7 @@ int ConnectToServer(MSN_Conn *conn, char *host, int port)
 
     if (GetHostAddress(host, &addy) == -1) {
         return -1;
-    } 
+    }
     sin.sin_addr.s_addr = addy;
     sin.sin_family      = AF_INET;
     sin.sin_port        = htons(port);
@@ -110,8 +111,8 @@ int SetProtocol(MSN_Conn *conn, char *protocol)
     char   responseLine[LINE_LENGTH+1];   /* response             */
     int    length, nwritten, nread;
     int    status = 0;
-    
-    length = sprintf(commandLine, "%s %d %s\r\n", CommandString[VER], TrID++, 
+
+    length = sprintf(commandLine, "%s %d %s\r\n", CommandString[VER], TrID++,
                      protocol);
     do
     {
@@ -146,7 +147,7 @@ int GetServerPolicyInfo(MSN_Conn *conn, char *sp)
     char   **args = NULL;
     int    numOfArgs;
     int    length, nwritten, nread;
-       
+
     length = sprintf(commandLine, "%s %lu\r\n", CommandString[INF], TrID);
     nwritten = write(conn->fd, commandLine, length);
     if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
@@ -155,7 +156,7 @@ int GetServerPolicyInfo(MSN_Conn *conn, char *sp)
     }
     commandLine[length-2] = '\0';
 
-   
+
     ParseArguments(responseLine, " ", &args, &numOfArgs);
     strcpy(sp, args[2]);
     DestroyArguments(&args, numOfArgs);
@@ -183,11 +184,11 @@ int AuthenticateUserMD5(MSN_Conn *conn, char *handle, char *passwd)
     int         length, nwritten, nread, di, xfrStatus;
     md5_state_t state;
     md5_byte_t  digest[16];
-    char        hash[33]; 
+    char        hash[33];
 
     AddHotmail(handle, &newHandle);
     responseLine[0] = '\0';
-    length = sprintf(commandLine, "%s %lu MD5 I %s\r\n", 
+    length = sprintf(commandLine, "%s %lu MD5 I %s\r\n",
              CommandString[USR], TrID++, newHandle);
     nwritten = write(conn->fd, commandLine, length);
     commandLine[length-2] = '\0';
@@ -207,7 +208,7 @@ int AuthenticateUserMD5(MSN_Conn *conn, char *handle, char *passwd)
             return -1;
         }
         responseLine[0] = '\0';
-        length = sprintf(commandLine, "%s %lu MD5 I %s\r\n", 
+        length = sprintf(commandLine, "%s %lu MD5 I %s\r\n",
                          CommandString[USR], TrID++, newHandle);
         nwritten = write(conn->fd, commandLine, length);
         commandLine[length-2] = '\0';
@@ -216,7 +217,7 @@ int AuthenticateUserMD5(MSN_Conn *conn, char *handle, char *passwd)
             free(newHandle);
             return -1;
         }
-        ParseArguments(responseLine, " ", &args, &numOfArgs); 
+        ParseArguments(responseLine, " ", &args, &numOfArgs);
 
     }
 
@@ -248,7 +249,7 @@ int AuthenticateUserMD5(MSN_Conn *conn, char *handle, char *passwd)
         return -1;
     }
     DestroyArguments(&args, numOfArgs);
-    
+
     ParseArguments(responseLine, " ", &args, &numOfArgs);
     if ((numOfArgs != 5) || (strcasecmp(args[0], "USR"))) {
         DestroyArguments(&args, numOfArgs);
@@ -273,7 +274,7 @@ int ChangeState(MSN_Conn *conn, char *state)
     char   commandLine[LINE_LENGTH+1];    /* command that is sent */
     int    length, nwritten;
 
-    length = sprintf(commandLine, "%s %lu %s\r\n", CommandString[CHG], TrID++, 
+    length = sprintf(commandLine, "%s %lu %s\r\n", CommandString[CHG], TrID++,
                      state);
     nwritten = write(conn->fd, commandLine, length);
     return 0;
@@ -313,7 +314,7 @@ int HandleRing(MSN_Conn *conn, char **args, int numOfArgs)
     char   responseLine[LINE_LENGTH+1];   /* response             */
     char   endOfResponse[LINE_LENGTH+1];  /* end of response      */
     int    length, nwritten, nread;
-    char    *sessionID, *host, *sp, *authChallengeInfo, *callingUserHandle, 
+    char    *sessionID, *host, *sp, *authChallengeInfo, *callingUserHandle,
             *callingUserFriendlyName, *serverAddress;
     char    **localArgs;
     int     localNumOfArgs;
@@ -341,7 +342,7 @@ int HandleRing(MSN_Conn *conn, char **args, int numOfArgs)
         free(newHandle);
         return -1;
     }
-    
+
     /*
     ** Establish new connection
     */
@@ -362,8 +363,8 @@ int HandleRing(MSN_Conn *conn, char **args, int numOfArgs)
     /*
     ** answer back and get the new roster
     */
-    length = sprintf(commandLine, "%s %lu %s %s %s\r\n", 
-                     CommandString[ANS], TrID, newHandle, authChallengeInfo, 
+    length = sprintf(commandLine, "%s %lu %s %s %s\r\n",
+                     CommandString[ANS], TrID, newHandle, authChallengeInfo,
                      sessionID);
     sprintf(endOfResponse, "%s %lu OK", CommandString[ANS], TrID++);
 
@@ -381,10 +382,10 @@ int HandleRing(MSN_Conn *conn, char **args, int numOfArgs)
         ParseArguments(responseLine, " ", &localArgs, &localNumOfArgs);
         if (localNumOfArgs == 6) {
             index = atoi(localArgs[2]);
-            AddUserToChatList(&newConn->chatUsers, localArgs[4], 
-                              localArgs[5], index, USER_NLN); 
-        } 
-        DestroyArguments(&localArgs, localNumOfArgs); 
+            AddUserToChatList(&newConn->chatUsers, localArgs[4],
+                              localArgs[5], index, USER_NLN);
+        }
+        DestroyArguments(&localArgs, localNumOfArgs);
         responseLine[0] = '\0';
         if (MSN_Read(newConn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
             KillConnection(conn);
@@ -451,7 +452,7 @@ static char *Utf8ToStr(unsigned char *in)
         if (c < 128) {
 			result[i++] = (char) c;
         }
-        else {						
+        else {
             result[i++] = (c << 6) | (in[++n] & 63);
         }
     }
@@ -475,13 +476,13 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
     MSN_InstantMessage newIm;
     char *message;
     char *mimeInfo, *im, *decodedIm;
-    int  length, nread; 
+    int  length, nread;
 
     message = NULL;
     mimeInfo = NULL;
-    im = NULL; 
+    im = NULL;
 	decodedIm = NULL;
-	
+
     if (numOfArgs != 4)
         return -1;
 
@@ -489,7 +490,7 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
     message = (char *)malloc(sizeof(char) * (length + 1));
 
     err_printf("HandleMessage ( From : %s (%s) -> %d bytes )\n",args[1],args[2],args[3]);
-    
+
     nread = read(conn->fd, message, length);
     message[nread] = '\0';
 
@@ -498,7 +499,7 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
     if (ParseMimeHeaders(message, &mimeInfo, &im) != 0) {
         return -1;
     }
- 
+
     if (mimeInfo != NULL) {
         if (strstr(mimeInfo, "text/plain") != NULL) {
 		decodedIm = Utf8ToStr(im);
@@ -521,15 +522,15 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
 		else if (strstr(mimeInfo, "text/x-msmsgsinitialemailnotification")) {
 			char *tmp = strstr(im, "Inbox-Unread: ") + strlen("Inbox-Unread: ");
 			MSN_MailNotification data;
-			
+
 			data.from = NULL;
 			data.unread = (int) strtol(tmp, &decodedIm, 10);
-			
+
 			tmp = strstr(decodedIm, "Folders-Unread: ") + strlen("Folders-Unread: ");
-			
+
 			data.unread += (int) strtol(tmp, &decodedIm, 10);
 			conn->unreadMail = data.unread;
-			
+
 			if ((data.unread > 0) /*&& (msn_event[MSN_MAIL] != NULL)*/) {
 				(*msn_event[MSN_MAIL])(&data);
 			}
@@ -541,17 +542,17 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
 			data.from = tmp;
 			tmp = strstr(data.from, "\r\n"); *tmp = '\0';
 			DecodeMime(data.from);
-			
+
 			data.subject = strstr(tmp + 1, "Subject: ") + strlen("Subject: ");
 			tmp = strstr(data.subject, "\r\n"); *tmp = '\0';
 			DecodeMime(data.subject);
-			
+
 			data.destfolder = strstr(tmp + 1, "Dest-Folder: ") + strlen("Dest-Folder: ");
 			tmp = strstr(data.destfolder, "\r\n"); *tmp = '\0';
-			
+
 			data.fromaddr = strstr(tmp + 1, "From-Addr: ") + strlen("From-Addr: ");
 			tmp = strstr(data.fromaddr, "\r\n"); *tmp = '\0';
-			
+
 			data.unread = 1;
 			conn->unreadMail += 1;
 			if (msn_event[MSN_MAIL] != NULL)
@@ -562,7 +563,7 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
 			char *srcfolder = tmp;
 			char *destfolder = NULL;
 			int delta = 0;
-			
+
 			tmp = strstr(srcfolder, "\r\n"); *tmp = '\0';
 			destfolder = strstr(tmp + 1, "Dest-Folder: ") + strlen("Dest-Folder: ");
 			tmp = strstr(destfolder, "\r\n"); *tmp = '\0';
@@ -572,7 +573,7 @@ int HandleMessage(MSN_Conn *conn, char **args, int numOfArgs)
 
 			if ((!strcmp(srcfolder, destfolder)) ||
 				(!strcmp(destfolder, ".!!trAsH"))) {
-				conn->unreadMail -= delta;			
+				conn->unreadMail -= delta;
 			}
 		}
         else if (strstr(mimeInfo, "text/x-msmsgscontrol")) {
@@ -613,8 +614,8 @@ int SendMessage(MSN_Conn *conn, char *message)
 	UTFmessage = StrToUtf8(message);
     commandLine = (char *)malloc(strlen(MIME_HEADER)+strlen(UTFmessage)+25);
     length = sprintf(commandLine, "%s %lu N %d\r\n%s%s", CommandString[MSG],
-                     TrID++, strlen(UTFmessage)+strlen(MIME_HEADER), MIME_HEADER, 
-                     UTFmessage); 
+                     TrID++, strlen(UTFmessage)+strlen(MIME_HEADER), MIME_HEADER,
+                     UTFmessage);
 
     write(conn->fd, commandLine, length);
     free(commandLine);
@@ -633,7 +634,7 @@ int SendMessage(MSN_Conn *conn, char *message)
 int HandleAcknowledge(MSN_Conn *conn)
 {
     int  nread;
-    char responseLine[LINE_LENGTH];  
+    char responseLine[LINE_LENGTH];
 
     if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
         KillConnection(conn);
@@ -656,7 +657,7 @@ int SendBYE(MSN_Conn *conn)
 
     length = sprintf(commandLine, "%s\r\n", CommandString[OUT]);
     write(conn->fd, commandLine, length);
-    return 0;     
+    return 0;
 }
 
 /*
@@ -760,7 +761,7 @@ int HandleOUT(MSN_Conn *conn, char **args, int numOfArgs)
     }
 
     if (strcmp(args[1], "OTH") == 0)
-        MSN_ErrorOut("You have logged onto MSN from another computer", 
+        MSN_ErrorOut("You have logged onto MSN from another computer",
                        "Other Logon");
 
     if (strcmp(args[1], "SSD") == 0)
@@ -768,7 +769,7 @@ int HandleOUT(MSN_Conn *conn, char **args, int numOfArgs)
                        "Maintenance");
 
     if ((msn_event[MSN_OUT] != NULL) && (conn = MSNshiz.conn.mainconn))
-        (*msn_event[MSN_OUT])(&conn); 
+        (*msn_event[MSN_OUT])(&conn);
 
     return 0;
 }
@@ -791,7 +792,7 @@ int HandleILN(MSN_Conn *conn, char **args, int numOfArgs)
 
     RemoveHotmail(args[3], &sc.handle);
     sc.newStatus = USER_NLN;
-    /* 
+    /*
     ** Substate check
     */
 
@@ -842,7 +843,7 @@ int HandleILN(MSN_Conn *conn, char **args, int numOfArgs)
     }
 
     if (msn_event[MSN_ILN] != NULL)
-        (*msn_event[MSN_ILN])(&sc); 
+        (*msn_event[MSN_ILN])(&sc);
     free(sc.handle);
     return 0;
 }
@@ -890,10 +891,10 @@ int HandleNLN(MSN_Conn *conn, char **args, int numOfArgs)
     if (numOfArgs != 4)
         return -1;
 
-    /* 
+    /*
     ** Substate check
     */
-    
+
     RemoveHotmail(args[2], &sc.handle);
     sc.newStatus = USER_NLN;
 
@@ -946,7 +947,7 @@ int HandleNLN(MSN_Conn *conn, char **args, int numOfArgs)
     if (msn_event[MSN_NLN] != NULL)
         (*msn_event[MSN_NLN])(&sc);
 
-    free(sc.handle); 
+    free(sc.handle);
     return 0;
 }
 
@@ -1098,9 +1099,9 @@ int HandleXFR(MSN_Conn *conn, char **args, int numOfArgs, int listener)
     if (ParseHostPort(args[3], &host, &port) != 0) {
         return -1;
     }
-   
+
     //if (conn->listenerID > 0)
-        m_input_remove(conn); 
+        m_input_remove(conn);
 
     close(conn->fd);
     conn->fd = -1;
@@ -1138,11 +1139,11 @@ int AddContact(MSN_Conn *conn, char *handle)
         return 0;
 
     AddHotmail(handle, &newHandle);
-    /*length = sprintf(commandLine, "%s %lu FL %s %s\r\n", 
-                     CommandString[REM], TrID++, newHandle, handle); 
+    /*length = sprintf(commandLine, "%s %lu FL %s %s\r\n",
+                     CommandString[REM], TrID++, newHandle, handle);
     write(conn->fd, commandLine, length); */
-    length = sprintf(commandLine, "%s %lu FL %s %s\r\n", 
-                     CommandString[ADD], TrID++, newHandle, handle); 
+    length = sprintf(commandLine, "%s %lu FL %s %s\r\n",
+                     CommandString[ADD], TrID++, newHandle, handle);
     write(conn->fd, commandLine, length);
     free(newHandle);
     return 0;
@@ -1163,8 +1164,8 @@ int AuthorizeContact(MSN_Conn *conn, char *handle)
     char         *newHandle;
 
     AddHotmail(handle, &newHandle);
-    length = sprintf(commandLine, "%s %lu AL %s %s\r\n", 
-                     CommandString[ADD], TrID++, newHandle, handle); 
+    length = sprintf(commandLine, "%s %lu AL %s %s\r\n",
+                     CommandString[ADD], TrID++, newHandle, handle);
     write(conn->fd, commandLine, length);
     free(newHandle);
     return 0;
@@ -1188,7 +1189,7 @@ int RemoveContact(MSN_Conn *conn, char *handle)
         return 0;
 
     AddHotmail(handle, &newHandle);
-    length = sprintf(commandLine, "%s %lu FL %s\r\n", 
+    length = sprintf(commandLine, "%s %lu FL %s\r\n",
                      CommandString[REM], TrID++, newHandle);
     write(conn->fd, commandLine, length);
     free(newHandle);
@@ -1217,9 +1218,9 @@ int Logout(MSN_Conn *conn)
 }
 
 
-/* 
+/*
 ** Name:    GetHostAddress
-** Purpose: This function returns a host number for use in connecting to 
+** Purpose: This function returns a host number for use in connecting to
 **          a socket
 ** Input:   hostname - name of host
 **          number to use to connect
@@ -1233,7 +1234,7 @@ static int GetHostAddress(char *hostname, unsigned int *number)
     struct hostent *hp;
 
     if ((hp = gethostbyname(hostname))) {
-        
+
         *number =  ((struct in_addr *)(hp->h_addr))->s_addr;
         return 0;
     }
@@ -1244,7 +1245,7 @@ static int GetHostAddress(char *hostname, unsigned int *number)
 
 /*
 ** Name:    MSN_Read
-** Purpose: This function reads in the line of input on the socket up to the 
+** Purpose: This function reads in the line of input on the socket up to the
 **          \r\n.  Perhaps not as efficient as it could be, will look for other
 **          functions to be more efficient
 ** Input:   fd     - file descriptor
@@ -1273,7 +1274,7 @@ static int MSN_Read(int fd, char *buffer, int nItems, int *count)
             perror("Error from read");
             buffer[bcount] = '\0';
             return -1;
-        }   
+        }
         else if (c == '\r') {
             *count += 1;
         }
@@ -1287,10 +1288,10 @@ static int MSN_Read(int fd, char *buffer, int nItems, int *count)
             buffer[bcount++] = c;
             *count += 1;
         }
-        
+
     }
     return 0;
-}            
+}
 
 /*
 ** Name:    ParseForCommand
@@ -1306,14 +1307,14 @@ void ParseForCommand(MSN_Conn *msn_connection)
     int  nread;      /* number of bytes read */
     char **args;
     int  numOfArgs;
- 
+
     if (MSN_Read(msn_connection->fd, buffer, 5000, &nread)  <= -1) {
         KillConnection(msn_connection);
         return;
     }
 
     err_printf("ParseForCommand: buffer(%s)\n",buffer);
-    
+
     ParseArguments(buffer, " ", &args, &numOfArgs);
 
     if (numOfArgs > 0) {
@@ -1324,24 +1325,24 @@ void ParseForCommand(MSN_Conn *msn_connection)
 
         if      (strcasecmp(args[0], CommandString[RNG]) == 0)
             HandleRing(msn_connection, args, numOfArgs);
-        else if (strcasecmp(args[0], CommandString[MSG]) == 0) 
+        else if (strcasecmp(args[0], CommandString[MSG]) == 0)
             HandleMessage(msn_connection, args, numOfArgs);
-        else if (strcasecmp(args[0], CommandString[BYE]) == 0) 
+        else if (strcasecmp(args[0], CommandString[BYE]) == 0)
             HandleBye(msn_connection, args, numOfArgs);
        else  if (strcasecmp(args[0], CommandString[ILN]) == 0)
-            HandleILN(msn_connection, args, numOfArgs); 
+            HandleILN(msn_connection, args, numOfArgs);
         else if (strcasecmp(args[0], CommandString[FLN]) == 0)
             HandleFLN(msn_connection, args, numOfArgs);
-        else if (strcasecmp(args[0], CommandString[NLN]) == 0) 
-            HandleNLN(msn_connection, args, numOfArgs);  
-        else if (strcasecmp(args[0], CommandString[LST]) == 0) 
-            HandleLST(msn_connection, args, numOfArgs);  
-        else if (strcasecmp(args[0], CommandString[ADD]) == 0) 
-            HandleAdd(msn_connection, args, numOfArgs);  
-        else if (strcasecmp(args[0], CommandString[REM]) == 0) 
-            HandleRemove(msn_connection, args, numOfArgs);  
-        else if (strcasecmp(args[0], CommandString[OUT]) == 0) 
-            HandleOUT(msn_connection, args, numOfArgs);  
+        else if (strcasecmp(args[0], CommandString[NLN]) == 0)
+            HandleNLN(msn_connection, args, numOfArgs);
+        else if (strcasecmp(args[0], CommandString[LST]) == 0)
+            HandleLST(msn_connection, args, numOfArgs);
+        else if (strcasecmp(args[0], CommandString[ADD]) == 0)
+            HandleAdd(msn_connection, args, numOfArgs);
+        else if (strcasecmp(args[0], CommandString[REM]) == 0)
+            HandleRemove(msn_connection, args, numOfArgs);
+        else if (strcasecmp(args[0], CommandString[OUT]) == 0)
+            HandleOUT(msn_connection, args, numOfArgs);
         else if (strcasecmp(args[0], CommandString[XFR]) == 0)
             HandleXFR(msn_connection, args, numOfArgs, 1);
 	else
@@ -1365,9 +1366,9 @@ void ParseForCommand(MSN_Conn *msn_connection)
 int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
 {
     MSN_Conn *newConn;
-    char     commandLine[LINE_LENGTH+1];  
-    char     responseLine[LINE_LENGTH+1];  
-    char     endOfResponse[LINE_LENGTH+1];  
+    char     commandLine[LINE_LENGTH+1];
+    char     responseLine[LINE_LENGTH+1];
+    char     endOfResponse[LINE_LENGTH+1];
     int      length, nread, nwritten;
     char     **localArgs;
     int      localNumOfArgs;
@@ -1376,7 +1377,7 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
     int      lID;
     char     *newHandle;
 
-    AddHotmail(conn->handle, &newHandle); 
+    AddHotmail(conn->handle, &newHandle);
     length = sprintf(commandLine, "%s %lu SB\r\n", CommandString[XFR], TrID++);
     nwritten = write(conn->fd, commandLine, length);
     if (MSN_Read(conn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
@@ -1414,9 +1415,9 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
 
     strcpy(newConn->cookie, localArgs[5]);
 
-    sprintf(endOfResponse, "%s %lu OK %s Friend", CommandString[USR], TrID++, 
+    sprintf(endOfResponse, "%s %lu OK %s Friend", CommandString[USR], TrID++,
             newHandle);
-    length = sprintf(commandLine, "%s %lu %s %s\r\n", 
+    length = sprintf(commandLine, "%s %lu %s %s\r\n",
                      CommandString[USR], TrID++, newHandle, newConn->cookie);
     nwritten = write(newConn->fd, commandLine, length);
     if (MSN_Read(newConn->fd, responseLine, LINE_LENGTH, &nread) <= -1) {
@@ -1424,7 +1425,7 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
         free(newHandle);
         return -1;
     }
-     
+
 
     sprintf(endOfResponse, "%s %lu STATUS", CommandString[CAL], TrID++);
     length = sprintf(commandLine, "%s %lu %s\r\n", CommandString[CAL], TrID++,
@@ -1448,7 +1449,7 @@ int RequestSwitchboardSession(MSN_Conn *conn, char *handle)
 
     free(newHandle);
     err_printf("RequestSBSession: success. FD = %d\n",newConn->fd);
-    return 0; 
+    return 0;
 }
 
 /*
@@ -1501,7 +1502,7 @@ int KillConnection(MSN_Conn *conn)
     DestroyChatList(conn->alUsers);
     DestroyChatList(conn->blUsers);
     DestroyChatList(conn->rlUsers);
-    m_input_remove(conn);   
+    m_input_remove(conn);
     close(conn->fd);
     //msn_connections = m_list_remove(msn_connections, conn);
 
@@ -1509,10 +1510,10 @@ int KillConnection(MSN_Conn *conn)
         MSN_ErrorOut("You have lost your connection to the server",
                       "Connection lost.");
 
-        if (msn_event[MSN_OUT] != NULL) 
-            (*msn_event[MSN_OUT])(&conn); 
+        if (msn_event[MSN_OUT] != NULL)
+            (*msn_event[MSN_OUT])(&conn);
     } else {
-      /* this is probably the issue... don't want to kill the clobber this 
+      /* this is probably the issue... don't want to kill the clobber this
 	 memory */
       free(conn);
     }
@@ -1522,12 +1523,12 @@ int KillConnection(MSN_Conn *conn)
 
 #ifdef UNIT_TEST
 
-int main(void) 
+int main(void)
 {
     char     sp[10];
     MSN_Conn msn_connection;
 
-    msn_connection.serverType = DISPATCH_CONN;  
+    msn_connection.serverType = DISPATCH_CONN;
     msn_connection.chatUsers.users = NULL;
     msn_connection.chatUsers.numOfUsers = 0;
     msn_connection.flUsers.users = NULL;
@@ -1539,10 +1540,10 @@ int main(void)
     msn_connection.rlUsers.users = NULL;
     msn_connection.rlUsers.numOfUsers = 0;
     msn_connection.cookie[0] = '\0';
-    msn_connection.commonName[0] = '\0'; 
-    
+    msn_connection.commonName[0] = '\0';
+
     if (ConnectToServer(&msn_connection, DEFAULT_HOST, DEFAULT_PORT) != 0)
-        printf("Couldn't connect to server\n"); 
+        printf("Couldn't connect to server\n");
     if (SetProtocol(&msn_connection, DEFAULT_PROTOCOL) != 0)
         printf("Couldn't set protocol\n");
     if (GetServerPolicyInfo(&msn_connection, sp) != 0)
@@ -1560,4 +1561,3 @@ int main(void)
 }
 
 #endif
-

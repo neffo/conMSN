@@ -22,6 +22,7 @@
 //#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "libmsn.h"
 #include "parse_utils.h"
 #include "msn_commands.h"
@@ -150,7 +151,7 @@ int MSN_Login(char *handle, char *passwd, char *host, int port)
 #endif //DEBUG
 
     err_printf("MSNshiz.conn.cnx = %d\n",&MSNshiz.conn.cnx);
-    
+
 LOGIN_RETRY:
     retry++;
 
@@ -169,7 +170,7 @@ LOGIN_RETRY:
         	MSN_ErrorOut("Couldn't set protocol", "Protocol Error");
 		return -1;
 	}
-	
+
     }
     if (GetServerPolicyInfo(mainconn, sp) != 0) {
         MSN_ErrorOut("Couldn't retrieve security policy", "Policy Error");
@@ -180,7 +181,7 @@ LOGIN_RETRY:
         MSN_ErrorOut("Unable to authenticate user", "Authentication Error");
         return -1;
     }
-   
+
     Synchronize(mainconn);
     ChangeState(mainconn, "NLN");
 
@@ -216,7 +217,7 @@ int MSN_SendMessage(char *handle, char *message)
 	    err_printf("MSN_SendMessage: unable to create new connection.\n");
             return -1;
         }
-    } 
+    }
     SendMessage(conn, message);
     free(newHandle);
     return 0;
@@ -237,7 +238,7 @@ int MSN_AddContact(char *handle)
         return -1;
 
     AddContact(MSNshiz.conn.mainconn, handle);
-    return 0;    
+    return 0;
 }
 
 /*
@@ -272,9 +273,9 @@ int MSN_AuthorizeContact(MSN_Conn *conn, char *handle)
 
 /*
 ** Name:    MSN_EndChat
-** Purpose: This function sends an OUT mesage to the server to end a 
+** Purpose: This function sends an OUT mesage to the server to end a
 **          chat with a user
-** Input:   handle - handle to end chat with 
+** Input:   handle - handle to end chat with
 ** Output:  0 on success, -1 on failure
 */
 
@@ -314,4 +315,3 @@ int MSN_ChangeState(int state)
 
     return ChangeState(MSNshiz.conn.mainconn, StateStrings[state]);
 }
-

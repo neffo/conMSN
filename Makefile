@@ -1,5 +1,5 @@
 #CC=icc
-CC=icc
+CC=gcc
 
 VERSION=`cat VERSION`
 BUILDDATE=`date +%Y%m%d`

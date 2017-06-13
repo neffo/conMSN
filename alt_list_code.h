@@ -1,3 +1,6 @@
+#ifndef ALT_LIST_CODE_H
+#define ALT_LIST_CODE_H
+
 
 typedef struct mlist_s {
 	void *next;
@@ -12,3 +15,5 @@ mlist m_list_remove ( mlist, void *);
 void m_list_free ( mlist);
 mlist m_list_find_custom ( mlist, void *, mCompareFunc);
 mlist m_list_find ( mlist list, void *data );
+
+#endif

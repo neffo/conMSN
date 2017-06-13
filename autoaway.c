@@ -6,8 +6,10 @@
  *
  */
 
+#include <stdlib.h>
 #include <utmp.h>
 #include <signal.h>
+#include <strings.h>
 #include "msn_shiz.h"
 #include "display.h"
 
@@ -28,7 +30,7 @@ void CheckLoggedIn(int a1, int a2)
 	setutent();
 
 	found = 0;
-	
+
 	while( (ut = getutent()) )
 		if (ut->ut_type == 7) // login pty? ignore screen, X and locals
 		{

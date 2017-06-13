@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
@@ -53,14 +54,14 @@ void cmd_complete()
 	int count;
 	int i;
 //	int cmds[MAX_CMDS];
-	int match; 
+	int match;
 	char *space;
 	char *cmp;
 	char matches[1024];
 	int matchedcmds;
 
 	char *str;
-	
+
 	count = 0;
 	match = -1;
 
@@ -74,7 +75,7 @@ void cmd_complete()
 	if (!space)
 	{
 
-/* old method		
+/* old method
 		for (i=0; commands[i].cmdn < BADCMD; i++)
 		{
 			if ( strncasecmp(input.cmd,commands[i].cmd,input.len) == 0)
@@ -86,11 +87,11 @@ void cmd_complete()
 */
 
 		match = 0;
-		
+
 		match = get_cmd_by_string ( complete_word( input.cmd, CMDS, matches, &matchedcmds) );
 
 		if ( match > -1 )
-		{	
+		{
 			if ( cvar_true("msn_complete_word") )
 			{
 				sprintf(input.cmd,"%s ",commands[match].cmd);
@@ -111,7 +112,7 @@ void cmd_complete()
 
 		if (match < 0)
 			goto end;
-		
+
 		cmp = 0;
 
 		cmp = complete_word(space+1,commands[match].comp_t, matches, &matchedcmds);
@@ -133,6 +134,7 @@ void cmd_complete()
 		}
 
 		end:
+		;
 		// skip all that crap above
 	}
 
@@ -162,9 +164,9 @@ char *complete_word ( char *word, complete_t type, char *matches, int *matchedcm
 
 //	log_printf("DEBUG: _%s_ %d",word, type);
 //
-	
+
 	matches[0]=0;
-	
+
 	switch (type)
 	{
 	case CMDS:
@@ -216,7 +218,7 @@ char *complete_word ( char *word, complete_t type, char *matches, int *matchedcm
 //		log_printf("DEBUG: type = STATUS");
 		for(i=0;i<MAX_STATES;i++)
 		{
-			if ( strncasecmp(word,msn_long_status[i],strlen(word))== 0 
+			if ( strncasecmp(word,msn_long_status[i],strlen(word))== 0
 					|| strcasecmp(word,msn_short_status[i]) == 0)
 			{
 				ret = msn_long_status[i];
@@ -296,7 +298,7 @@ void input_parse(int ch)
 				break;
 			case KEY_PPAGE:
 				log_scroll_up();
-				break; 
+				break;
 			case KEY_NPAGE:
 				log_scroll_down();
 				break;
@@ -326,21 +328,21 @@ void input_parse(int ch)
 	else if ( input.in_mode == IN_LINE )
 	{
 		switch (ch) {
-			
+
 		case '\t':
 		case KEY_F0:
 		case KEY_UP:
 		case KEY_DOWN:
 			break;
-			
+
 		case KEY_PPAGE:
 			history_up();
 			break;
-			
+
 		case KEY_NPAGE:
 			history_down();
 			break;
-			
+
 		case KEY_BACKSPACE:
 		case 127:
 			line_remchar();
@@ -351,7 +353,7 @@ void input_parse(int ch)
 		default:
 			line_addchar(ch);
 		}
-			
+
 	}
 	else if ( input.in_mode == IN_BLOCK )
 	{
@@ -360,7 +362,7 @@ void input_parse(int ch)
 	else if ( input.in_mode == IN_CHAT )
 	{
 		switch (ch) {
-			
+
 		case '\t':
 		case KEY_F0:
 		case KEY_UP:
@@ -381,7 +383,7 @@ void input_parse(int ch)
 			log_printf("aNow chatting to %s.",input.contact->alias);
 			redraw_cmd_line();
 			break;
-			
+
 		case ']':
 			input.contact = next_contact();
 			snprintf(input.prompt,29,"%s>",input.contact->alias);
@@ -391,7 +393,7 @@ void input_parse(int ch)
 
 		case KEY_BACKSPACE:
 		case 127:
-			line_remchar(); 
+			line_remchar();
 			break;
 		case '\n':
 			if ( input.input_size > 0 )
@@ -465,7 +467,7 @@ void line_remchar()
 void line_docmd()
 {
 	int ignore=0;
-	
+
 	switch (input.current_cmd)
 	{
 	case LOGIN_USER:
@@ -477,7 +479,7 @@ void line_docmd()
 		input.cmd[0] = 0;
 		input.inputbuf = input.cmd;
 		input.input_size = 0;
-		ignore = 1; 	// hack so it doesn't overwrite some of the above 
+		ignore = 1; 	// hack so it doesn't overwrite some of the above
 				// values
 		break;
 	case LOGIN_PASSWORD:
@@ -527,9 +529,9 @@ void history_up ()
 	strcpy(input.cmd,history[input.history_pos]);
 	input.len = strlen(input.cmd);
 	input.curspos = input.len;
-	
+
 	redraw_cmd_line();
-	
+
 	display.wcmd.changed = 1;
 }
 
@@ -543,9 +545,9 @@ void history_down()
 	strcpy(input.cmd,history[input.history_pos]);
 	input.len = strlen(input.cmd);
 	input.curspos = input.len;
-	
+
 	redraw_cmd_line();
-	
+
 	display.wcmd.changed = 1;
 }
 
@@ -576,7 +578,7 @@ void process_cmd()
 	int cmdn;
 	macro_t *macro;
 	msn_contact_t *cont;
-	
+
 	i=0;
 	command=0;
 	arg=0;
@@ -605,7 +607,7 @@ void process_cmd()
 			command == 0;
 			goto endbit;
 		}
-		
+
 		command = &commands[cmdn];
 
 		if (command == 0)
@@ -621,7 +623,7 @@ void process_cmd()
 
 		if (command)
 			command->do_it(args[1]);
-	
+
 		endbit:
 		if (!command)
 		{
@@ -638,14 +640,14 @@ void process_cmd()
 					clr_cmdline();
 					command->do_it(arg);
 				}
-				
+
 			}
 		}
 	}
 	else
 	{
 	/*	this should never be called anyway
-	
+
 		arg = eq + 1;
 		strncpy(cmd,input.cmd,eq-input.cmd);
 
@@ -689,14 +691,14 @@ void clr_cmdline()
 	redraw_cmd_line();
 	//wredrawln(stdscr,display.wcmd.sy,1);
 }
-		
+
 void do_login(char *string)
 {
 	cMSN_Login();
 }
 void do_chstatus(char *mode)
 {
-	int status;	
+	int status;
 
 	status = get_status_by_string(mode);
 
@@ -722,19 +724,19 @@ void do_sndmsg(char *user)
 
 		if (*user)
 			select_contact_by_alias ( user );
-		
+
 		if (!input.contact)
 		{
 			log_printf("eNo contact selected.");
 			return;
 		}
-	
+
 		log_printf("aSending message to %s:",input.contact->handle);
 		log_println("a<ENTER> to send, empty line to abort");
 
 		//strcpy(input.prompt,"MSG:>");
 		snprintf(input.prompt,29,"%s>",input.contact->alias);
-	
+
 		input.in_mode = IN_LINE;
 		input.cmd[0] = 0;
 		input.inputbuf = input.cmd;
@@ -756,7 +758,7 @@ void do_help(char *command)
 	int i;
 	int match;
 
-	if (*command)
+	if (command != NULL)
 		match = get_cmd_by_string(command);
 	else
 		match = -1;
@@ -769,7 +771,7 @@ void do_help(char *command)
 		log_println("  [ & ] : select previous/next contact.");
 		log_println("  PageUp & PageDn : scroll log up/down.");
 		log_println("  Up & Down Arrows : command history.");
-		
+
 		for (i=0;commands[i].cmdn<BADCMD;i++)
 		{
 			log_printf("a%s %s:",commands[i].cmd,commands[i].args);
@@ -800,11 +802,11 @@ void do_chat (char *handle)
 		log_printf("eNo contact selected.");
 		return;
 	}
-	
+
 	log_printf("aChatting to %s (%s):",input.contact->alias,input.contact->handle);
 	log_println("aPress <ENTER> to send. Empty line ends chat.");
 	log_println("aUse [ & ] to select user.");
-			
+
 	snprintf(input.prompt,29,"%s>",input.contact->alias);
 	input.in_mode = IN_CHAT;
 	input.cmd[0] = 0;
@@ -822,7 +824,7 @@ void do_about (char *data)
 	gettimeofday(&tv,0);
 
 	getfut(fut,&tv,&MSNshiz.startup);
-	
+
 	log_printf("--[About]");
 	log_printf("a%s",PROG_NAME);
 	log_printf("a%s",PROG_VERSION);
@@ -842,7 +844,7 @@ void chat_send ()
 		log_printf("eNot connected.");
 		goto end;
 	}
-	
+
 	if (MSN_SendMessage(input.contact->handle,input.inputbuf)==0)
 	{
 		// succeess
@@ -859,7 +861,7 @@ void chat_send ()
 //	log_printf("m%s > %s",input.contact->alias, input.inputbuf);
 
 end:
-	
+
 	*input.inputbuf = 0;
 	input.input_size = 0;
 
@@ -926,7 +928,7 @@ msn_contact_t * prev_contact ()
 		else
 			return NULL;
 	}
-	
+
 	cur =  m_list_find ( MSNshiz.contacts, input.contact );
 
 	if ( cur && cur->prev)
@@ -948,7 +950,7 @@ msn_contact_t * next_contact ()
 		else
 			return NULL;
 	}
-	
+
 	cur = m_list_find ( MSNshiz.contacts, input.contact );
 
 	if ( cur && cur->next )
@@ -964,7 +966,7 @@ void cvar_list ( char *string)
 {
 	mlist cur;
 	msn_cvar_t *cvar;
-	
+
 	log_println("--[Cvars]");
 	for(cur=MSNshiz.cvars;cur;cur=cur->next)
 	{
@@ -981,7 +983,7 @@ int get_status_by_string (char *string)
 	int status;
 
 	status = -1;
-	
+
 	for (i=0;i<MAX_STATES;i++)
 	{
 		if ( strncasecmp(string,msn_short_status[i],strlen(string))==0 || strncasecmp(string,msn_long_status[i],strlen(string))==0 )
@@ -1008,7 +1010,13 @@ void do_cvar_set ( char *string )
 {
 	char *space; // value
 	char cvarn[128];
-	msn_cvar_t *cv; 
+	msn_cvar_t *cv;
+
+	if (string == NULL) {
+		log_printf("aNeeds a cvar variable name");
+		return;
+	}
+
 
 	space = strchr(string,' ');
 
@@ -1048,7 +1056,7 @@ void do_macro ( char *string )
 	mlist cur;
 
 	found = 0;
-	
+
 	space = strchr(string,' ');
 
 	if (space)
@@ -1127,7 +1135,7 @@ void do_macro ( char *string )
 			log_printf("a%s -> \"%s %s\"",found->cmd, commands[found->cmdn].cmd, found->string);
 		}
 	}
-			
+
 }
 
 void do_setup ( char *string )
@@ -1156,9 +1164,9 @@ void do_set_alias ( char *string)
 	char *args[2]; // 0 = user 1 = new alias
 
 	cont = 0;
-	
+
 	err_printf("do_set_alias %s\n",string);
-	
+
 	if ( string_to_args(string, args, 2) == 2)
 	{
 		if ( strcmp(args[0],"-")== 0 )
@@ -1185,7 +1193,7 @@ void do_set_alias ( char *string)
 	{
 		log_printf("eInvalid number of args.");
 	}
-	
+
 }
 
 void do_show_conns ( char *string)
@@ -1213,12 +1221,12 @@ void do_show_conns ( char *string)
 		j=0;
 		for ( curu = users; curu; curu=curu->next)
 		{
-			guy = curu->data;	
+			guy = curu->data;
 			log_printf(" User # %d Handle = %s Alias = %s Cookie = %s",j,guy->userHandle,guy->userFriendlyHandle,conn->cookie);
 		}
-		
+
 	}
-	
+
 }
 
 
@@ -1230,7 +1238,7 @@ int string_to_args ( char *string, char **arg, int args )
 	int i;
 
 	i=0;
-	
+
 	for (space = string; i < args && space; i++)
 	{
 		if (space && i)
@@ -1238,7 +1246,7 @@ int string_to_args ( char *string, char **arg, int args )
 			*space = 0;
 			space++;
 		}
-		
+
 		arg[i] = space;
 
 		space = strchr(space,' ');
@@ -1251,7 +1259,7 @@ int string_to_args ( char *string, char **arg, int args )
 	}
 
 	err_printf("string_to_args() %d -> %d\n",args,i);
-	
+
 	return i;
 }
 
@@ -1279,8 +1287,8 @@ msn_contact_t *get_contact_by_string ( char *string)
 	mlist matches;
 	char *match;
 	cvar_t cv;
-	
-	
+
+
 	*matches=0;
 
 	if (cmp_t == CVARS)
@@ -1307,10 +1315,10 @@ msn_contact_t *get_contact_by_string ( char *string)
 			{
 				if
 			}
-			
+
 		}
 	}
 
-	
+
 }
 */

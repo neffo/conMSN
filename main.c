@@ -8,6 +8,7 @@
 #include "display.h"
 #include "input.h"
 #include "msn_shiz.h"
+#include "autoaway.h"
 
 cdisplay_t display;
 input_t input;
@@ -127,6 +128,7 @@ int main( void )
 				
 			}
 			again:
+			;
 		}
 		
 		redraw_status();

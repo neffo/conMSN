@@ -1,5 +1,11 @@
+#ifndef DISPLAY_H
+#define DISPLAY_H
+
+#include <string.h>
+#include <stdlib.h>
 #include "alt_list_code.h"
 #include "display.h"
+#include "msn_shiz.h"
 
 mlist m_list_append ( mlist list, void *data)
 {
@@ -8,7 +14,7 @@ mlist m_list_append ( mlist list, void *data)
 	void *prev = 0;
 
 	cur = list;
-	
+
 	if (!cur)
 	{
 		cur = (mlist) malloc (sizeof(mlist_t));
@@ -57,15 +63,15 @@ mlist m_list_remove ( mlist list, void *data)
 	mlist prev;
 	mlist next;
 	mlist first;
-	
+
 	cur = list;
 	prev = 0;
 	first = cur;
-	
+
 	// FIXME: use a function to do this
 	//
 	err_printf("m_list_remove(list = %x, data = %x)\n",list,data);
-	
+
 	while ( cur && cur->data != data )
 	{
 		prev = cur;
@@ -97,10 +103,10 @@ mlist m_list_remove ( mlist list, void *data)
 	// FIXME: i'm not 100% sure we should be doing this
 	free(cur);
 
-	
+
 
 	return first;
-	
+
 }
 
 void m_list_free ( mlist list)
@@ -108,10 +114,10 @@ void m_list_free ( mlist list)
 	mlist cur;
 
 	cur = list;
-	
+
 	if (!cur)
 		return;
-		
+
 	while (cur)
 	{
 		if (cur->data)
@@ -146,3 +152,4 @@ mlist m_list_find ( mlist list, void *data )
 
 	return cur;
 }
+#endif

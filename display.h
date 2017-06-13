@@ -69,6 +69,7 @@ void log_println(char *string);
 void log_printf(char *format, ...);
 void append_ln ( char *string );
 void draw_scrollbar(int sy,int sx, int by1, int by2, int by3, int by4);
+void update_windows( );
 
 int conn_count ();
 /*

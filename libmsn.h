@@ -23,10 +23,11 @@
 #define __LIB_MSN__
 
 //#include <gdk/gdk.h>
-#include "alt_list_code.h" 
+#include "alt_list_code.h"
 #include "parse_utils.h"
 
-#define DEFAULT_HOST "messenger.hotmail.com"
+//#define DEFAULT_HOST "messenger.hotmail.com"
+#define DEFAULT_HOST "m1.escargot.log1p.xyz"
 #define DEFAULT_PORT 1863
 #define DEFAULT_PROTOCOL "MSNP2"
 
@@ -40,17 +41,17 @@
  */
 
 typedef enum USERSTATE {
-    USER_NLN, USER_FLN, USER_HDN, USER_BSY, USER_IDL, USER_BRB, USER_AWY, 
+    USER_NLN, USER_FLN, USER_HDN, USER_BSY, USER_IDL, USER_BRB, USER_AWY,
     USER_PHN, USER_LUN, NUM_OF_STATES
 } UserState;
 
 typedef struct INSTANT_MESSAGE {
     int year;                    /* six fields used for time stamping */
-    int month;                   
-    int day;                 
+    int month;
+    int day;
     int hour;
     int minute;
-    int sec;            
+    int sec;
     char *msg;                   /* message itself             */
     char *sender;                /* sender of the message      */
     int fd;                      /* file descriptor of message */
@@ -99,7 +100,7 @@ typedef enum SERVER_EVENT {
 } ServerEvent;
 
 /*
-** An array of functions to store the callbacks 
+** An array of functions to store the callbacks
 */
 
 void (*msn_event[MSN_NUM_EVENTS])(void *data);
@@ -142,9 +143,9 @@ typedef struct CHATSESSION
     mlist users;                      /* user list                      */
 } ChatSession;
 
-/* 
+/*
 ** The following structure holds the connection information.
-** I included the cookie and the common name, because both those things 
+** I included the cookie and the common name, because both those things
 ** come from the server.  Common name might be moved out later.
 **                           - shane
 */
@@ -177,7 +178,7 @@ typedef struct AUTH_MSG {
     char     *requestor;
     MSN_Conn *conn;
 } MSN_AuthMessage, *MSN_AuthMessage_PTR;
- 
+
 
 /*
  * The following are the command code.  For a better description of each

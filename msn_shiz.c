@@ -1,4 +1,6 @@
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include "libmsn.h"
 #include "display.h"
 #include "input.h"
@@ -40,11 +42,11 @@ void MSNInstantMessage(void *data)
 		err_printf("contact == NULL\n");
 		contact = new_contact(im->sender,im->sender);
 	}
-		
+
 
 	// FIXME: add event to log files (DONE)
 	if (cvar_true("msn_log"))
-		log_event ( contact->alias, im->msg, im->day, im->month, 
+		log_event ( contact->alias, im->msg, im->day, im->month,
 			im->hour, im->minute );
 	// print message to screen
 	log_printf("m[%02d:%02d] %s> %s", im->hour,im->minute,contact->alias,im->msg);
@@ -81,7 +83,7 @@ void MSNStatusChange(void *data)
 	msn_contact_t * contact;
 
 	sc = (MSN_StatusChange_PTR)data;
-	
+
 	contact = GetContactByHandle(sc->handle);
 
 	if (contact == NULL)
@@ -93,7 +95,7 @@ void MSNStatusChange(void *data)
 		ext_onl(contact->alias, msn_long_status[contact->status]);
 
 	log_printf("a%s is %s.",contact->alias,msn_long_status[contact->status]);
-	
+
 	redraw_status();
 }
 
@@ -104,7 +106,7 @@ void MSNAuthRequest(void *data)
 	am = (MSN_AuthMessage_PTR)data;
 
 	//FIXME: just add them anyway?
-	
+
 	log_printf("a%s would like to add you to their contact list.",am->handle);
 	log_printf("aUse \"auth\" to authorize them.");
 
@@ -131,7 +133,7 @@ void cMSN_Authorize()
 			log_printf("aContact authorized.");
 		else
 			log_printf("eContact authorization failed.");
-		
+
 		free(MSNshiz.authdata->requestor);
 		free(MSNshiz.authdata);
 		MSNshiz.authdata = 0;
@@ -146,7 +148,7 @@ void cMSN_Login()
 {
 	char server[256];
 	int port;
-	
+
 	strcpy(server,msn_server);
 	port = atoi(msn_port);
 
@@ -175,16 +177,16 @@ void cMSN_Logout()
 	msn_contact_t *contact;
 
 	MSN_Logout();
-	
+
 	// FIXME: set all user status to OFFLINE (DONE)
-	
+
 	for (cur = MSNshiz.contacts;cur;cur=(mlist)cur->next)
 	{
 		contact = (msn_contact_t *) cur->data;
 
 		contact->status = MSN_OFFLINE;
 	}
-	
+
 	redraw_status();
 }
 
@@ -218,14 +220,14 @@ void cMSN_TermChat(char *handle)
 void cMSN_AddContact(char *handle)
 {
 	msn_contact_t *contact;
-	
+
 	if (MSN_AddContact(handle) == 0)
 		err_printf("cMSN_AddContact: %s -> %s success\n",handle);
 	else
 		err_printf("cMSN_AddContact: %s -> %s failure\n",handle);
 
 	// FIXME: this should use the new_contact() function
-	
+
 /*
 	contact = (msn_contact_t *) malloc ( sizeof(msn_contact_t));
 
@@ -244,7 +246,7 @@ void cMSN_AddContact(char *handle)
 void cMSN_RemContact(char *handle)
 {
 	msn_contact_t *cur;
-	
+
 	MSN_RemoveContact(handle);
 
 	cur = GetContactByHandle(handle);
@@ -279,8 +281,8 @@ msn_contact_t *GetContactByHandle( char *handle)
 		if (strncasecmp(temp->handle, handle,len) == 0)
 			contact = temp;
 	}
-	
-	return contact;	
+
+	return contact;
 }
 
 void m_input_add (int fd, MSN_CALLBACK func, MSN_Conn *conn )
@@ -305,7 +307,7 @@ void m_input_remove ( MSN_Conn *conn )
 
 
 	err_printf("m_input_remove( Mainconn = %x, conn = %x, fd = %d)\n",MSNshiz.conn.cnx,conn,conn->fd);
-	
+
 	for (cur = MSNshiz.conn.cnx;cur;cur=cur->next)
 	{
 		sconn = (msn_sess_conn_t *)cur->data;
@@ -319,7 +321,7 @@ void m_input_remove ( MSN_Conn *conn )
 			return;
 		}
 	}
-	
+
 	// FIXME: free conn as well ?
 }
 
@@ -327,18 +329,18 @@ void setup_fds()
 {
 	mlist cur;
 	msn_sess_conn_t *conn;
-	
+
 	cur = MSNshiz.conn.cnx;
 	conn = 0;
 	FD_ZERO(&MSNshiz.fds);
 	FD_SET(0, &MSNshiz.fds);
-	
+
 	for(;cur;cur=cur->next)
 	{
 		conn = ( msn_sess_conn_t * ) cur->data;
 
 	//	err_printf("setup_fds() : fd = %d\n",conn->conn->fd);
-		
+
 		FD_SET(conn->conn->fd,&MSNshiz.fds);
 	}
 
@@ -365,7 +367,7 @@ void MSNInitShiz ()
 }
 
 void init_cvars ()
-{	
+{
 	set_cvar("msn_auto_select","n","Change currently selected contact on event.");
 	set_cvar("msn_auto_away","y","Change status to away when user logs out. (Useful when using screen.)");
 	set_cvar("msn_log","y","Log instant messages to a file.");
@@ -500,7 +502,7 @@ msn_contact_t *new_contact(char *handle, char *alias)
 	err_printf("new_contact: %s %d\n",handle,cont);
 
 	free(fullhandle);
-	
+
 	return cont;
 }
 
@@ -517,7 +519,7 @@ void err_printf(char *format, ...)
 		fprintf(MSNshiz.errfile,out);
 
 	fflush(stderr);
-	
+
 	va_end(argp);
 }
 

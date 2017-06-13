@@ -1,4 +1,5 @@
 #include <curses.h>
+#include <string.h>
 #include "display.h"
 #include <stdarg.h>
 #include <math.h>

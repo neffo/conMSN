@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -59,7 +60,7 @@ void write_contacts()
 	}
 
 	sprintf(dir,"%s/.msn/contacts",getenv("HOME"));
-	
+
 	cfile = fopen(dir,"w+");
 
 	if ( cfile == NULL)
@@ -92,7 +93,7 @@ void read_contacts()
 	char *space;
 
 	sprintf(dir,"%s/.msn/contacts",getenv("HOME"));
-	
+
 /*	if ( stat(dir,&fs) == 0 )
 	{
 		log_println("ERROR: contacts file not found.");
@@ -109,7 +110,7 @@ void read_contacts()
 
 	while ( fgets ( line, 512, cfile) != NULL )
 	{
-		
+
 		if (line[strlen(line)-1] == '\n')
 			line[strlen(line)-1] = 0;
 
@@ -117,7 +118,7 @@ void read_contacts()
 
 		if (!space)
 			goto end;
-		
+
 		*space = 0;
 
 		cont = (msn_contact_t *)malloc(sizeof(msn_contact_t));
@@ -131,7 +132,7 @@ void read_contacts()
 	}
 
 end:
-	
+
 	fclose (cfile);
 }
 
@@ -144,7 +145,7 @@ void write_config()
 	mlist cur;
 
 	msn_cvar_t *cvar;
-	
+
 	sprintf(file,"%s/.msn/config",getenv("HOME"));
 
 	cfile = fopen(file,"w+");
@@ -163,7 +164,7 @@ void write_config()
 		cvar=(msn_cvar_t *)cur->data;
 		fprintf(cfile,"%s: %s\n",cvar->name,cvar->value);
 	}
-	
+
 	fclose(cfile);
 }
 
@@ -176,12 +177,12 @@ void read_config()
 	mlist cur;
 
         msn_cvar_t *cvar;
-	
+
 	char line[256];
 	char file[256];
 
 	sprintf(file,"%s/.msn/config",getenv("HOME"));
-	
+
 	cfile = fopen(file,"r");
 
 	if (cfile == NULL)
@@ -212,7 +213,7 @@ void read_config()
 			}
 		}
 
-		
+
 	}
 
 	fclose(cfile);
@@ -251,7 +252,7 @@ void read_macros()
 	char *space2;
 	int cmd;
 	int c;
-	
+
 	mlist cur;
 	macro_t *macro;
 
@@ -300,7 +301,7 @@ void log_event ( char *alias, char *message, int day, int month, int hour, int m
 
 	char filename[256];
 
-	// FIXME: should probably have a function to ensure alias is a 
+	// FIXME: should probably have a function to ensure alias is a
 	// valid filename
 
 	snprintf(filename,256,"%s/.msn/%s.log",getenv("HOME"),alias);
@@ -326,7 +327,7 @@ void log_event ( char *alias, char *message, int day, int month, int hour, int m
 void ext_msg (char *user, char *msg )
 {
 	if (call_ext(EXT_MSG,user,msg))
-		log_printf("eERROR: ext_msg() unable to execute external command.");		
+		log_printf("eERROR: ext_msg() unable to execute external command.");
 }
 
 void ext_onl (char *user, char *status)
@@ -387,5 +388,4 @@ int call_ext ( char *cmd, char *d1, char *d2 )
 	system(command);
 
 	return 0;
-}	
-
+}

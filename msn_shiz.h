@@ -3,6 +3,7 @@
 #define MSN_SHIZ_H
 
 #include "libmsn.h"
+#include "display.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -37,7 +38,8 @@ typedef enum msn_state_n {
 	MAX_STATES
 } msn_state_t;
 
-static char msn_server[255] = "messenger.hotmail.com";
+//static char msn_server[255] = "messenger.hotmail.com";
+static char msn_server[255] = "m1.escargot.log1p.xyz";
 static char msn_port[10] = "1863";
 
 typedef struct msn_sess_s
@@ -139,6 +141,5 @@ msn_cvar_t * find_cvar ( char *cvar );
 void err_printf(char *format, ...);
 
 void getfut(char *, struct timeval *, struct timeval *);
-
 
 #endif
