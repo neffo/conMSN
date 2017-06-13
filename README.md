@@ -38,6 +38,7 @@ Requirements:
 Things to note:
 - conMSN never really worked reliably, it would segfault but never when I was
   able to diagnose it (in a screen session usually)
+- calling it version 0.9.2 was really a bit of an overreach
 - the configuration is performed via cvars (the Quake influence)
 - the code is pretty bad, but it does impress me to look back at (tab
   completion, scroll buffers, help screens, cvars!)
