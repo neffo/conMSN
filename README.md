@@ -58,7 +58,7 @@ len = (int)(strchr(handle,'@') - strlen(handle));
 
 ## Screenshots
 ![2002 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2002.jpg)
-![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conMSN-2017.jpg)
+![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conMSN-2017.png)
 
 ## Build Instructions
 ~~~
