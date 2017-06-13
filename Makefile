@@ -4,6 +4,7 @@ CC=gcc
 VERSION=`cat VERSION`
 BUILDDATE=`date +%Y%m%d`
 BUILDTIME=`date +%H%M`
+SRC=src/
 
 PVER=v$(VERSION)_$(BUILDDATE)_$(BUILDTIME)
 
@@ -35,44 +36,44 @@ console: $(OBJS) Makefile
 
 depend:
 
-main.o: main.c display.o input.o 
-	$(CC) main.c -c $(CCOPTS)
+main.o: src/main.c display.o input.o 
+	$(CC) src/main.c -c $(CCOPTS)
 
-display.o: display.c 
-	$(CC) -c $(CCOPTS) display.c
+display.o: src/display.c 
+	$(CC) -c $(CCOPTS) src/display.c
 
-input.o: input.c 
-	$(CC) -c $(CCOPTS) input.c
+input.o: src/input.c 
+	$(CC) -c $(CCOPTS) src/input.c
 
-msn_shiz.o: msn_shiz.c
-	$(CC) -c $(CCOPTS) msn_shiz.c
+msn_shiz.o: src/msn_shiz.c
+	$(CC) -c $(CCOPTS) src/msn_shiz.c
 
-md5.o: md5.c
-	$(CC) -c $(CCOPTS) md5.c
+md5.o: src/md5.c
+	$(CC) -c $(CCOPTS) src/md5.c
 
-libmsn.o: libmsn.c
-	$(CC) -c $(CCOPTS) libmsn.c
+libmsn.o: src/libmsn.c
+	$(CC) -c $(CCOPTS) src/libmsn.c
 
-msn_commands.o: msn_commands.c
-	$(CC) -c $(CCOPTS) msn_commands.c
+msn_commands.o: src/msn_commands.c
+	$(CC) -c $(CCOPTS) src/msn_commands.c
 
-parse_utils.o: parse_utils.c
-	$(CC) -c $(CCOPTS) parse_utils.c
+parse_utils.o: src/parse_utils.c
+	$(CC) -c $(CCOPTS) src/parse_utils.c
 
-chat_lists.o: chat_lists.c
-	$(CC) -c $(CCOPTS) chat_lists.c
+chat_lists.o: src/chat_lists.c
+	$(CC) -c $(CCOPTS) src/chat_lists.c
 
-alt_list_code.o: alt_list_code.c
-	$(CC) -c $(CCOPTS) alt_list_code.c
+alt_list_code.o: src/alt_list_code.c
+	$(CC) -c $(CCOPTS) src/alt_list_code.c
 
-file.o: file.c
-	$(CC) -c $(CCOPTS) file.c
+file.o: src/file.c
+	$(CC) -c $(CCOPTS) src/file.c
 
-autoaway.o: autoaway.c
-	$(CC) -c $(CCOPTS) autoaway.c
+autoaway.o: src/autoaway.c
+	$(CC) -c $(CCOPTS) src/autoaway.c
 
 clean:
 	rm -f *.o *~ console
 
 targz: clean
-	bash -c "cd ..;tar zcvf nefmsn_$(VERSION)_`date +%Y_%m_%d`.tar.gz nefmsn-latest/"
+	bash -c "cd ..;tar zcvf conmsn_$(VERSION)_`date +%Y_%m_%d`.tar.gz nefmsn-latest/"

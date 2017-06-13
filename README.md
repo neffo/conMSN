@@ -1,12 +1,13 @@
 # conMSN - a simple console MSN client from 2002
 
-I was a science student who didn't like the official MSN client, so I tried to
-write one. (I also didn't like studying. Go figure.)
+Back when I was a science student who didn't like the official MSN client, so I
+tried to write one. (I also didn't like studying. Go figure.)
 
 Being constantly online in 2001/2 was kinda a dream (remember, dial-up modems),
-and, ugh, the drag it is in 2017. [Phone dings in background.] Conniving your
-way into getting a login on a cable modem equiped friend, could enable the
-illusion of that by having you constantly on-line in IRC, ICQ, or MSN.
+and not, ugh, the drag it is in 2017. [Phone dings in background.] Conniving
+your way into getting a login on a cable modem equiped friend's Linux machine,
+could enable the illusion of that by having you constantly on-line in IRC, ICQ,
+or MSN.
 
 The MSN service shut down in 2013, but this client used an old unsecured version
 of the API which probably disappeared earlier. The API calls were ripped a
@@ -55,6 +56,9 @@ len = (int)(strchr(handle,'@') - strlen(handle));
 ~~~
 - I never really like using MSN ... but I wrote this??
 
+Screenshots:
+![2002 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2002.jpg)
+![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2017.jpg)
 
 
 Build:
