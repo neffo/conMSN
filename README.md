@@ -61,10 +61,11 @@ len = (int)(strchr(handle,'@') - strlen(handle));
 - I never really like using MSN ... but I wrote this??
 
 ## Screenshots
-What it looked like in 2002:
+
+###What it looked like in 2002:
 ![2002 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2002.jpg)
 
-What it looks like in 2017:
+###What it looks like in 2017:
 ![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conMSN-2017.png)
 
 ## Build Instructions
