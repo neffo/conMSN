@@ -1,5 +1,6 @@
 #include <curses.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 
@@ -29,11 +30,13 @@ int main( void )
 	int res;
 	mlist cur;
 	msn_sess_conn_t *conn;
+	char logfile[1024];
 
 	first_run ();
 	
 #ifdef USE_ERR_LOG
 
+	snprintf(logfile,1024,"%s/.msn/error.log",getenv("HOME"));
 	MSNshiz.errfile = fopen("/home/ineffable/.msn/error.log","a+");
 
 	if ( MSNshiz.errfile == NULL )
