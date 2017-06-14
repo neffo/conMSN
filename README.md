@@ -29,7 +29,10 @@ old hard drive backup to see what the code looked like. I do have to say, I am
 proud of it. I don't know if I ever showed it to anyone at the time.
 
 I had to fix a few problems, but it was compiling (with warnings) in about 30
-minutes.
+minutes. I made a couple of changes to the code to fix simple out-of-bound
+errors too. The screen shot from 2017 is taken using the above escargot MSN
+servers. I have no idea how many people use that service, but kinda cool it
+exists!
 
 ## Requirements
 - libncurses & development libraries
@@ -58,7 +61,10 @@ len = (int)(strchr(handle,'@') - strlen(handle));
 - I never really like using MSN ... but I wrote this??
 
 ## Screenshots
+What it looked like in 2002:
 ![2002 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conmsn-2002.jpg)
+
+What it looks like in 2017:
 ![2017 Screenshot](https://raw.githubusercontent.com/neffo/conMSN/master/screenshots/conMSN-2017.png)
 
 ## Build Instructions
