@@ -63,7 +63,7 @@ int AddUserToChatList(ChatSession *chatSession, char *userHandle,
  
     chatSession->users = m_list_append(chatSession->users, newUser); 
     chatSession->numOfUsers += 1;
-    err_printf("AddUserToChatList: %s STATUS: %s\n",userHandle,msn_status_strings[userState-1]);
+    err_printf("AddUserToChatList: %s STATUS: %s\n",userHandle,msn_status_strings[userState]);
 
     sc = (MSN_StatusChange*)malloc(sizeof(MSN_StatusChange));
 
@@ -71,7 +71,7 @@ int AddUserToChatList(ChatSession *chatSession, char *userHandle,
 	    return -1;
 
     sc->handle = userHandle;
-    sc->newStatus = userState-1; 
+    sc->newStatus = userState; 
 
     MSNStatusChange(sc);
 
